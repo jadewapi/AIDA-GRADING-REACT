@@ -243,8 +243,8 @@ function Nav() {
         }
       } else {
         alert("Wrong credentials");
-        setUserName("");
-        setPin(null);
+        setUserName((prev) => "");
+        setPin((prev) => null);
         return prev;
       }
     });
