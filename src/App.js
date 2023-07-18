@@ -225,7 +225,7 @@ function Headers() {
 function Nav() {
   const [currentTeacher, setCurrentTeacer] = useState([]);
   const [userName, setUserName] = useState("");
-  const [pin, setPin] = useState(null);
+  const [pin, setPin] = useState("");
   function handleUserName(value) {
     setUserName(value);
   }
@@ -234,21 +234,21 @@ function Nav() {
   }
   function handleLogin(e) {
     e.preventDefault();
-    setCurrentTeacer((prev) => {
-      const newArr = data.find((obj) => obj.userName === userName);
-      console.log(newArr);
-      if (newArr) {
-        if (newArr.userPin === pin) {
-          return (prev = newArr);
-        }
+    const newArr = data.find((obj) => obj.userName === userName);
+    console.log(newArr);
+    if (newArr) {
+      if (newArr.userPin === pin) {
+        setCurrentTeacer(newArr);
       } else {
         alert("Wrong credentials");
-        setUserName((prev) => "");
-        setPin((prev) => null);
-        return prev;
       }
-    });
+    } else {
+      alert("Wrong credentials");
+    }
+    setUserName("");
+    setPin("");
   }
+
   return (
     <nav className="topMenu">
       <div className="logoContainer">
