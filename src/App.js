@@ -223,28 +223,24 @@ function Headers() {
 }
 
 function Nav() {
-  const [currentTeacher, setCurrentTeacer] = useState([]);
+  const [currentTeacher, setCurrentTeacher] = useState([]);
   const [userName, setUserName] = useState("");
   const [pin, setPin] = useState("");
   function handleUserName(value) {
     setUserName(value);
   }
   function handlePin(value) {
-    setPin(Number(value));
+    setPin(value);
   }
   function handleLogin(e) {
     e.preventDefault();
     const newArr = data.find((obj) => obj.userName === userName);
     console.log(newArr);
     if (newArr) {
-      if (newArr.userPin === pin) {
-        setCurrentTeacer(newArr);
-      } else {
-        alert("Wrong credentials");
+      if (newArr.userPin === Number(pin)) {
+        return setCurrentTeacher(newArr);
       }
-    } else {
-      alert("Wrong credentials");
-    }
+    } else setCurrentTeacher([]);
     setUserName("");
     setPin("");
   }
@@ -263,12 +259,14 @@ function Nav() {
           onChange={(e) => {
             handleUserName(e.target.value);
           }}
+          value={userName}
         />
         <input
           type="text"
           className="userPin"
           placeholder="pin"
           onChange={(e) => handlePin(e.target.value)}
+          value={pin}
         />
         <button className="loginButton">
           <svg
