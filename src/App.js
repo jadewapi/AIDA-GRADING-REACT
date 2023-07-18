@@ -222,12 +222,32 @@ function Headers() {
   );
 }
 
-function Nav(e) {
+function Nav() {
   const [currentTeacher, setCurrentTeacer] = useState([]);
   const [userName, setUserName] = useState("");
   const [pin, setPin] = useState(null);
-  function handleUserName(e) {
-    console.log(e.target.value);
+  function handleUserName(value) {
+    setUserName(value);
+  }
+  function handlePin(value) {
+    setPin(Number(value));
+  }
+  function handleLogin(e) {
+    e.preventDefault();
+    setCurrentTeacer((prev) => {
+      const newArr = data.find((obj) => obj.userName === userName);
+      console.log(newArr);
+      if (newArr) {
+        if (newArr.userPin === pin) {
+          return (prev = newArr);
+        }
+      } else {
+        alert("Wrong credentials");
+        setUserName("");
+        setPin(null);
+        return prev;
+      }
+    });
   }
   return (
     <nav className="topMenu">
@@ -235,17 +255,22 @@ function Nav(e) {
         <img src="aida.png" alt="logo" />
         <p>AIDA</p>
       </div>
-      <form className="login">
+      <form className="login" onSubmit={(e) => handleLogin(e)}>
         <input
           type="text"
           className="userName"
           placeholder="user name"
           onChange={(e) => {
-            handleUserName(e);
+            handleUserName(e.target.value);
           }}
         />
-        <input type="text" className="userPin" placeholder="pin" />
-        <button type="button" className="loginButton">
+        <input
+          type="text"
+          className="userPin"
+          placeholder="pin"
+          onChange={(e) => handlePin(e.target.value)}
+        />
+        <button className="loginButton">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="3rem"
