@@ -56,7 +56,7 @@ body {
 }
 
 #root > section {
-  height: 60rem;
+  height: 58rem;
   max-height: 78.9rem;
 }
 
@@ -590,4 +590,8 @@ svg {
 
 .deleteAssignmentButton:hover {
   border: 4px solid black;
+}
+
+.specificStudent:hover {
+  filter: brightness(1.5);
 }

@@ -193,6 +193,7 @@ const data = [
 
 export default function App() {
   const [currentTeacher, setCurrentTeacher] = useState(undefined);
+  //
   return (
     <>
       <Nav
@@ -200,7 +201,7 @@ export default function App() {
         setCurrentTeacher={setCurrentTeacher}
       />
       <Headers />
-      <AllStudents />
+      <AllStudents currentTeacher={currentTeacher} />
       <DisplayInterface />
       <AssignmentInfo />
     </>
@@ -300,72 +301,22 @@ function Nav({ currentTeacher, setCurrentTeacher }) {
   );
 }
 
-function AllStudents() {
+function AllStudents({ currentTeacher }) {
   return (
     <section className="allStudents">
-      <div className="specificStudent">
-        <div className="specificStudentContainer">
-          <p className="specificStudentFirstName">Jadsfdsfde</p>
-          <p className="specificStudentLastName">Pineda</p>
-          <p className="specificStudentScore">98</p>
-        </div>
-      </div>
-      <div className="specificStudent">
-        <div className="specificStudentContainer">
-          <p className="specificStudentFirstName">Jadsfdsfde</p>
-          <p className="specificStudentLastName">Pineda</p>
-          <p className="specificStudentScore">98</p>
-        </div>
-      </div>
-      <div className="specificStudent">
-        <div className="specificStudentContainer">
-          <p className="specificStudentFirstName">Jadsfdsfde</p>
-          <p className="specificStudentLastName">Pineda</p>
-          <p className="specificStudentScore">98</p>
-        </div>
-      </div>
-      <div className="specificStudent">
-        <div className="specificStudentContainer">
-          <p className="specificStudentFirstName">Jadsfdsfde</p>
-          <p className="specificStudentLastName">Pineda</p>
-          <p className="specificStudentScore">98</p>
-        </div>
-      </div>
-      <div className="specificStudent">
-        <div className="specificStudentContainer">
-          <p className="specificStudentFirstName">Jadsfdsfde</p>
-          <p className="specificStudentLastName">Pineda</p>
-          <p className="specificStudentScore">98</p>
-        </div>
-      </div>
-      <div className="specificStudent">
-        <div className="specificStudentContainer">
-          <p className="specificStudentFirstName">Jadsfdsfde</p>
-          <p className="specificStudentLastName">Pineda</p>
-          <p className="specificStudentScore">98</p>
-        </div>
-      </div>
-      <div className="specificStudent">
-        <div className="specificStudentContainer">
-          <p className="specificStudentFirstName">Jadsfdsfde</p>
-          <p className="specificStudentLastName">Pineda</p>
-          <p className="specificStudentScore">98</p>
-        </div>
-      </div>
-      <div className="specificStudent">
-        <div className="specificStudentContainer">
-          <p className="specificStudentFirstName">Jadsfdsfde</p>
-          <p className="specificStudentLastName">Pineda</p>
-          <p className="specificStudentScore">98</p>
-        </div>
-      </div>
-      <div className="specificStudent">
-        <div className="specificStudentContainer">
-          <p className="specificStudentFirstName">Jadsfdsfde</p>
-          <p className="specificStudentLastName">Pineda</p>
-          <p className="specificStudentScore">98</p>
-        </div>
-      </div>
+      {currentTeacher ? (
+        currentTeacher.allStudents.map((obj, index) => (
+          <div className="specificStudent" key={index}>
+            <div className="specificStudentContainer">
+              <p className="specificStudentFirstName">{obj.firstName}</p>
+              <p className="specificStudentLastName">{obj.lastName}</p>
+              <p className="specificStudentScore">{obj.average}</p>
+            </div>
+          </div>
+        ))
+      ) : (
+        <p></p>
+      )}
     </section>
   );
 }
