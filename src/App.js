@@ -302,6 +302,7 @@ function Nav({ currentTeacher, setCurrentTeacher }) {
 }
 
 function AllStudents({ currentTeacher }) {
+  const [currentStudent, setCurrentStudent] = useState(undefined);
   return (
     <section className="allStudents">
       {currentTeacher ? (
