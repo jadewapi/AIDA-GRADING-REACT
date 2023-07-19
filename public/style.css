@@ -124,6 +124,17 @@ svg {
   fill: white;
 }
 
+.loggedIn > p {
+  color: white;
+  font-size: 2rem;
+}
+
+.loggedIn > button {
+  width: 100%;
+  font-size: 2rem;
+  border-radius: 20px;
+}
+
 /* end topmenu--nav */
 
 /* start headers */

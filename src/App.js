@@ -192,9 +192,13 @@ const data = [
 ];
 
 export default function App() {
+  const [currentTeacher, setCurrentTeacher] = useState(undefined);
   return (
     <>
-      <Nav />
+      <Nav
+        currentTeacher={currentTeacher}
+        setCurrentTeacher={setCurrentTeacher}
+      />
       <Headers />
       <AllStudents />
       <DisplayInterface />
@@ -222,8 +226,7 @@ function Headers() {
   );
 }
 
-function Nav() {
-  const [currentTeacher, setCurrentTeacher] = useState([]);
+function Nav({ currentTeacher, setCurrentTeacher }) {
   const [userName, setUserName] = useState("");
   const [pin, setPin] = useState("");
   function handleUserName(value) {
@@ -238,46 +241,61 @@ function Nav() {
     console.log(newArr);
     if (newArr) {
       if (newArr.userPin === Number(pin)) {
-        return setCurrentTeacher(newArr);
+        setCurrentTeacher(newArr);
+      } else {
+        setCurrentTeacher(undefined);
+        alert("Wrong credentials");
       }
-    } else setCurrentTeacher([]);
+    } else {
+      setCurrentTeacher(undefined);
+      alert("Wrong credentials");
+    }
     setUserName("");
     setPin("");
   }
-
+  function handleLogout() {
+    setCurrentTeacher(undefined);
+  }
   return (
     <nav className="topMenu">
       <div className="logoContainer">
         <img src="aida.png" alt="logo" />
         <p>AIDA</p>
       </div>
-      <form className="login" onSubmit={(e) => handleLogin(e)}>
-        <input
-          type="text"
-          className="userName"
-          placeholder="user name"
-          onChange={(e) => {
-            handleUserName(e.target.value);
-          }}
-          value={userName}
-        />
-        <input
-          type="text"
-          className="userPin"
-          placeholder="pin"
-          onChange={(e) => handlePin(e.target.value)}
-          value={pin}
-        />
-        <button className="loginButton">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="3rem"
-            viewBox="0 0 448 512"
-          >
-            <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z" />
-          </svg>
-        </button>
-      </form>
+      {currentTeacher ? (
+        <div class="loggedIn">
+          <p>Welcome, {currentTeacher.teacherName}!</p>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
+      ) : (
+        <form className="login" onSubmit={(e) => handleLogin(e)}>
+          <input
+            type="text"
+            className="userName"
+            placeholder="user name"
+            onChange={(e) => {
+              handleUserName(e.target.value);
+            }}
+            value={userName}
+          />
+          <input
+            type="text"
+            className="userPin"
+            placeholder="pin"
+            onChange={(e) => handlePin(e.target.value)}
+            value={pin}
+          />
+          <button className="loginButton">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="3rem"
+              viewBox="0 0 448 512"
+            >
+              <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z" />
+            </svg>
+          </button>
+        </form>
+      )}
     </nav>
   );
 }
