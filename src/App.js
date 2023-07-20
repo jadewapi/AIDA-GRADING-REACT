@@ -37,7 +37,6 @@ const data = [
         lastName: "Thompson",
         average: 82,
         studentId: "111",
-        currentSelected: false,
         studentAssignment: [
           {
             assignmentName: "Dichotomous Key",
@@ -70,7 +69,6 @@ const data = [
         lastName: "Johnson",
         average: 82,
         studentId: "187",
-        currentSelected: false,
         studentAssignment: [
           {
             assignmentName: "Dichotomous Key",
@@ -103,7 +101,6 @@ const data = [
         lastName: "Smith",
         average: 92,
         studentId: "002",
-        currentSelected: false,
         studentAssignment: [
           {
             assignmentName: "Dichotomous Key",
@@ -136,7 +133,6 @@ const data = [
         lastName: "Williams",
         average: 58,
         studentId: "191",
-        currentSelected: false,
         studentAssignment: [
           {
             assignmentName: "Dichotomous Key",
@@ -169,7 +165,6 @@ const data = [
         lastName: "Johnson",
         average: 78,
         studentId: "771",
-        currentSelected: false,
         studentAssignment: [
           {
             assignmentName: "Dichotomous Key",
@@ -204,6 +199,7 @@ const data = [
 export default function App() {
   const [currentTeacher, setCurrentTeacher] = useState(undefined);
   const [currentStudent, setCurrentStudent] = useState(undefined);
+  const [currentAssignment, setCurrentAssignment] = useState(undefined);
   function determineGradeColor(grade) {
     return {
       backgroundColor:
@@ -228,53 +224,47 @@ export default function App() {
         determineGradeColor={determineGradeColor}
         currentTeacher={currentTeacher}
         setCurrentStudent={setCurrentStudent}
+        currentStudent={currentStudent}
       />
       <DisplayInterface
         currentStudent={currentStudent}
         determineGradeColor={determineGradeColor}
+        currentTeacher={currentTeacher}
+        setCurrentAssignment={setCurrentAssignment}
       />
-      <AssignmentInfo />
+      <AssignmentInfo currentAssignment={currentAssignment} />
     </>
   );
 }
-
-function AllStudents({
-  currentTeacher,
-  setCurrentStudent,
-  determineGradeColor,
-}) {
-  function handleCurrentStudent(obj) {
-    setCurrentStudent((prev) => {
-      return currentTeacher.allStudents.find(
-        (studentObj) => studentObj === obj
-      );
-    });
-  }
+function AssignmentInfo({ currentAssignment }) {
   return (
-    <section className="allStudents">
-      {currentTeacher ? (
-        currentTeacher.allStudents.map((obj, index) => (
-          <div
-            style={determineGradeColor(obj.average)}
-            className="specificStudent"
-            key={index}
-            onClick={() => handleCurrentStudent(obj)}
-          >
-            <div className="specificStudentContainer">
-              <p className="specificStudentFirstName">{obj.firstName}</p>
-              <p className="specificStudentLastName">{obj.lastName}</p>
-              <p className="specificStudentScore">{obj.average}</p>
-            </div>
+    <section className="assignmentInfo">
+      <div className="specificAssignmentMenu">
+        <p>{currentAssignment.assignmentName}</p>
+        <div className="specificStats">
+          <p>avg:</p>
+          <p>{currentAssignment.assignmentAverage}</p>
+        </div>
+      </div>
+      <div className="listOfStudents">
+        <div className="studentNameAssignment">
+          <div className="studentName">
+            <p>Jade</p>
+            <p>Pineda</p>
           </div>
-        ))
-      ) : (
-        <p></p>
-      )}
+          <input type="text" />
+        </div>
+      </div>
     </section>
   );
 }
 
-function DisplayInterface({ currentStudent, determineGradeColor }) {
+function DisplayInterface({
+  currentStudent,
+  determineGradeColor,
+  currentTeacher,
+  setCurrentAssignment,
+}) {
   function determineGradeLetter(grade) {
     if (grade <= 100 && grade >= 95) {
       return "A+";
@@ -297,6 +287,13 @@ function DisplayInterface({ currentStudent, determineGradeColor }) {
     if (grade <= 69) {
       return "Fail";
     }
+  }
+  function handleCurrentAssignment(assignmentName) {
+    setCurrentAssignment((prev) => {
+      return currentTeacher.assignments.find(
+        (obj) => obj.assignmentName === assignmentName
+      );
+    });
   }
   return (
     <section className="displayInterface">
@@ -325,7 +322,12 @@ function DisplayInterface({ currentStudent, determineGradeColor }) {
           </div>
           <div className="assignmentContainer">
             {currentStudent.studentAssignment.map((assignmentObj, index) => (
-              <div className="specificAssignment">
+              <div
+                className="specificAssignment"
+                onClick={() =>
+                  handleCurrentAssignment(assignmentObj.assignmentName)
+                }
+              >
                 <div className="entryNumber">
                   <p>{index + 1}</p>
                 </div>
@@ -348,6 +350,48 @@ function DisplayInterface({ currentStudent, determineGradeColor }) {
       ) : (
         ""
       )}
+    </section>
+  );
+}
+
+function AllStudents({
+  currentTeacher,
+  setCurrentStudent,
+  determineGradeColor,
+  currentStudent,
+}) {
+  function handleCurrentStudent(obj) {
+    setCurrentStudent((prev) => {
+      return currentTeacher.allStudents.find(
+        (studentObj) => studentObj === obj
+      );
+    });
+  }
+  return (
+    <section className="allStudents">
+      {/*  */}
+      {currentTeacher ? (
+        currentTeacher.allStudents.map((obj, index) => (
+          <div
+            style={{
+              ...determineGradeColor(obj.average),
+              border: currentStudent === obj ? "5px solid #00000078" : "",
+            }}
+            className="specificStudent"
+            key={index}
+            onClick={() => handleCurrentStudent(obj)}
+          >
+            <div className="specificStudentContainer">
+              <p className="specificStudentFirstName">{obj.firstName}</p>
+              <p className="specificStudentLastName">{obj.lastName}</p>
+              <p className="specificStudentScore">{obj.average}</p>
+            </div>
+          </div>
+        ))
+      ) : (
+        <p></p>
+      )}
+      {/*  */}
     </section>
   );
 }
@@ -442,28 +486,5 @@ function Nav({ currentTeacher, setCurrentTeacher }) {
         </form>
       )}
     </nav>
-  );
-}
-
-function AssignmentInfo() {
-  return (
-    <section className="assignmentInfo">
-      <div className="specificAssignmentMenu">
-        <p>Assignment Name</p>
-        <div className="specificStats">
-          <p>avg:</p>
-          <p>87</p>
-        </div>
-      </div>
-      <div className="listOfStudents">
-        <div className="studentNameAssignment">
-          <div className="studentName">
-            <p>Jade</p>
-            <p>Pineda</p>
-          </div>
-          <input type="text" />
-        </div>
-      </div>
-    </section>
   );
 }
