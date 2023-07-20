@@ -596,3 +596,7 @@ svg {
 .specificStudent:hover {
   filter: saturate(2);
 }
+
+.specificAssignment:hover {
+  background-color: #b83d00;
+}
