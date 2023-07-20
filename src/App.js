@@ -35,7 +35,8 @@ const data = [
       {
         firstName: "Emma",
         lastName: "Thompson",
-        average: 78,
+        average: 82,
+        studentId: "111",
         studentAssignment: [
           {
             assignmentName: "Dichotomous Key",
@@ -47,7 +48,7 @@ const data = [
             assignmentName: "Solar System Model",
             assignmentDescription:
               "Build a scale model of the solar system, including all planets and their relative distances from the Sun.",
-            score: 98,
+            score: 78,
           },
           {
             assignmentName: "Chemical Reactions",
@@ -67,24 +68,25 @@ const data = [
         firstName: "Noah",
         lastName: "Johnson",
         average: 82,
+        studentId: "187",
         studentAssignment: [
           {
             assignmentName: "Dichotomous Key",
             assignmentDescription:
               "Create a dichotomous key to classify different types of leaves.",
-            score: 98,
+            score: 18,
           },
           {
             assignmentName: "Solar System Model",
             assignmentDescription:
               "Build a scale model of the solar system, including all planets and their relative distances from the Sun.",
-            score: 95,
+            score: 75,
           },
           {
             assignmentName: "Chemical Reactions",
             assignmentDescription:
               "Investigate and document three chemical reactions that produce noticeable changes.",
-            score: 53,
+            score: 13,
           },
           {
             assignmentName: "Ecosystem Research",
@@ -97,7 +99,8 @@ const data = [
       {
         firstName: "Olivia",
         lastName: "Smith",
-        average: 62,
+        average: 92,
+        studentId: "002",
         studentAssignment: [
           {
             assignmentName: "Dichotomous Key",
@@ -129,6 +132,7 @@ const data = [
         firstName: "Liam",
         lastName: "Williams",
         average: 58,
+        studentId: "191",
         studentAssignment: [
           {
             assignmentName: "Dichotomous Key",
@@ -160,6 +164,7 @@ const data = [
         firstName: "Ava",
         lastName: "Johnson",
         average: 78,
+        studentId: "771",
         studentAssignment: [
           {
             assignmentName: "Dichotomous Key",
@@ -193,6 +198,19 @@ const data = [
 
 export default function App() {
   const [currentTeacher, setCurrentTeacher] = useState(undefined);
+  const [currentStudent, setCurrentStudent] = useState(undefined);
+  function determineGradeColor(grade) {
+    return {
+      backgroundColor:
+        grade <= 100 && grade >= 85
+          ? "#3d6c48"
+          : grade <= 84 && grade >= 75
+          ? "#b39b00"
+          : grade <= 74 && grade >= 0
+          ? "#a00000"
+          : "red",
+    };
+  }
   //
   return (
     <>
@@ -201,10 +219,103 @@ export default function App() {
         setCurrentTeacher={setCurrentTeacher}
       />
       <Headers />
-      <AllStudents currentTeacher={currentTeacher} />
-      <DisplayInterface />
+      <AllStudents
+        determineGradeColor={determineGradeColor}
+        currentTeacher={currentTeacher}
+        setCurrentStudent={setCurrentStudent}
+      />
+      <DisplayInterface currentStudent={currentStudent} />
       <AssignmentInfo />
     </>
+  );
+}
+
+function DisplayInterface({ currentStudent }) {
+  return (
+    <section className="displayInterface">
+      {currentStudent ? (
+        <div className="interfaceDisplay">
+          <div className="studentID">
+            <p>student id:</p>
+            <p>{currentStudent.studentId}</p>
+          </div>
+          <div className="name">
+            <p>{currentStudent.firstName}</p>
+            <p>{currentStudent.lastName}</p>
+          </div>
+          <div className="studentAverage">
+            <p>student avg:</p>
+            <p>{currentStudent.average}</p>
+          </div>
+          <div className="entry">
+            <p>Entry</p>
+          </div>
+          <div className="assignment">
+            <p>Assignment</p>
+          </div>
+          <div className="grade">
+            <p>Grade</p>
+          </div>
+          <div className="assignmentContainer">
+            {currentStudent.studentAssignment.map((assignmentObj, index) => (
+              <div className="specificAssignment">
+                <div className="entryNumber">
+                  <p>{index + 1}</p>
+                </div>
+                <div className="specificAssignmentInfo">
+                  <div>
+                    <p>{assignmentObj.assignmentName}</p>
+                  </div>
+                  <p>{assignmentObj.assignmentDescription}</p>
+                </div>
+                <div className="assignmentGrade">
+                  <p>{assignmentObj.score}</p>
+                  <p>A+</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
+    </section>
+  );
+}
+
+function AllStudents({
+  currentTeacher,
+  setCurrentStudent,
+  determineGradeColor,
+}) {
+  function handleCurrentStudent(obj) {
+    setCurrentStudent((prev) => {
+      return currentTeacher.allStudents.find(
+        (studentObj) => studentObj === obj
+      );
+    });
+  }
+  return (
+    <section className="allStudents">
+      {currentTeacher ? (
+        currentTeacher.allStudents.map((obj, index) => (
+          <div
+            style={determineGradeColor(obj.average)}
+            className="specificStudent"
+            key={index}
+            onClick={() => handleCurrentStudent(obj)}
+          >
+            <div className="specificStudentContainer">
+              <p className="specificStudentFirstName">{obj.firstName}</p>
+              <p className="specificStudentLastName">{obj.lastName}</p>
+              <p className="specificStudentScore">{obj.average}</p>
+            </div>
+          </div>
+        ))
+      ) : (
+        <p></p>
+      )}
+    </section>
   );
 }
 
@@ -298,74 +409,6 @@ function Nav({ currentTeacher, setCurrentTeacher }) {
         </form>
       )}
     </nav>
-  );
-}
-
-function AllStudents({ currentTeacher }) {
-  const [currentStudent, setCurrentStudent] = useState(undefined);
-  return (
-    <section className="allStudents">
-      {currentTeacher ? (
-        currentTeacher.allStudents.map((obj, index) => (
-          <div className="specificStudent" key={index}>
-            <div className="specificStudentContainer">
-              <p className="specificStudentFirstName">{obj.firstName}</p>
-              <p className="specificStudentLastName">{obj.lastName}</p>
-              <p className="specificStudentScore">{obj.average}</p>
-            </div>
-          </div>
-        ))
-      ) : (
-        <p></p>
-      )}
-    </section>
-  );
-}
-
-function DisplayInterface() {
-  return (
-    <section className="displayInterface">
-      <div className="interfaceDisplay">
-        <div className="studentID">
-          <p>student id:</p>
-          <p>239</p>
-        </div>
-        <div className="name">
-          <p>Jade</p>
-          <p>Pineda</p>
-        </div>
-        <div className="studentAverage">
-          <p>student avg:</p>
-          <p>87</p>
-        </div>
-        <div className="entry">
-          <p>Entry</p>
-        </div>
-        <div className="assignment">
-          <p>Assignment</p>
-        </div>
-        <div className="grade">
-          <p>Grade</p>
-        </div>
-        <div className="assignmentContainer">
-          <div className="specificAssignment">
-            <div className="entryNumber">
-              <p>100</p>
-            </div>
-            <div className="specificAssignmentInfo">
-              <div>
-                <p>Assignment Name</p>
-              </div>
-              <p>Assignment Description</p>
-            </div>
-            <div className="assignmentGrade">
-              <p>100</p>
-              <p>A+</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
   );
 }
 

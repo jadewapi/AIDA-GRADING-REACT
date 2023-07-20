@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  user-select: none;
 }
 
 html {
@@ -217,7 +218,7 @@ svg {
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 9.5rem;
-  color: #1f3523;
+  color: #00000078;
   z-index: 1;
   letter-spacing: 5px;
 }
