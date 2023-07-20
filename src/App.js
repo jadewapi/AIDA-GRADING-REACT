@@ -224,13 +224,16 @@ export default function App() {
         currentTeacher={currentTeacher}
         setCurrentStudent={setCurrentStudent}
       />
-      <DisplayInterface currentStudent={currentStudent} />
+      <DisplayInterface
+        currentStudent={currentStudent}
+        determineGradeColor={determineGradeColor}
+      />
       <AssignmentInfo />
     </>
   );
 }
 
-function DisplayInterface({ currentStudent }) {
+function DisplayInterface({ currentStudent, determineGradeColor }) {
   return (
     <section className="displayInterface">
       {currentStudent ? (
@@ -269,7 +272,9 @@ function DisplayInterface({ currentStudent }) {
                   <p>{assignmentObj.assignmentDescription}</p>
                 </div>
                 <div className="assignmentGrade">
-                  <p>{assignmentObj.score}</p>
+                  <p style={determineGradeColor(assignmentObj.score)}>
+                    {assignmentObj.score}
+                  </p>
                   <p>A+</p>
                 </div>
               </div>
