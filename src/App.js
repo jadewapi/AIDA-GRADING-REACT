@@ -234,6 +234,29 @@ export default function App() {
 }
 
 function DisplayInterface({ currentStudent, determineGradeColor }) {
+  function determineGradeLetter(grade) {
+    if (grade <= 100 && grade >= 95) {
+      return "A+";
+    }
+    if (grade <= 94 && grade >= 90) {
+      return "A-";
+    }
+    if (grade <= 89 && grade >= 85) {
+      return "B+";
+    }
+    if (grade <= 84 && grade >= 80) {
+      return "B-";
+    }
+    if (grade <= 79 && grade >= 75) {
+      return "C+";
+    }
+    if (grade <= 74 && grade >= 70) {
+      return "C-";
+    }
+    if (grade <= 69) {
+      return "F";
+    }
+  }
   return (
     <section className="displayInterface">
       {currentStudent ? (
@@ -275,7 +298,7 @@ function DisplayInterface({ currentStudent, determineGradeColor }) {
                   <p style={determineGradeColor(assignmentObj.score)}>
                     {assignmentObj.score}
                   </p>
-                  <p>A+</p>
+                  <p>{determineGradeLetter(assignmentObj.score)}</p>
                 </div>
               </div>
             ))}
