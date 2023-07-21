@@ -235,12 +235,16 @@ export default function App() {
         setCurrentAssignment={setCurrentAssignment}
         currentAssignment={currentAssignment}
       />
-      <AssignmentInfo currentAssignment={currentAssignment} />
+      <AssignmentInfo
+        currentAssignment={currentAssignment}
+        currentTeacher={currentTeacher}
+        setCurrentTeacher={setCurrentTeacher}
+      />
     </>
   );
 }
 
-function AssignmentInfo({ currentAssignment }) {
+function AssignmentInfo({ currentAssignment, currentTeacher }) {
   return (
     <section className="assignmentInfo">
       {currentAssignment && (
@@ -253,13 +257,25 @@ function AssignmentInfo({ currentAssignment }) {
             </div>
           </div>
           <div className="listOfStudents">
-            <div className="studentNameAssignment">
-              <div className="studentName">
-                <p>Jade</p>
-                <p>Pineda</p>
-              </div>
-              <input type="text" />
-            </div>
+            {currentTeacher &&
+              currentTeacher.allStudents.map((obj) => (
+                <div className="studentNameAssignment">
+                  <div className="studentName">
+                    <p>{obj.firstName}</p>
+                    <p>{obj.lastName}</p>
+                  </div>
+                  <input
+                    type="text"
+                    value={
+                      obj.studentAssignment.find(
+                        (obj) =>
+                          obj.assignmentName ===
+                          currentAssignment.assignmentName
+                      ).score
+                    }
+                  />
+                </div>
+              ))}
           </div>
         </>
       )}
