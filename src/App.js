@@ -200,7 +200,6 @@ export default function App() {
   const [currentTeacher, setCurrentTeacher] = useState(undefined);
   const [currentStudent, setCurrentStudent] = useState(undefined);
   const [currentAssignment, setCurrentAssignment] = useState(undefined);
-  const [data, setData] = useState([...]);
   function determineGradeColor(grade) {
     return {
       backgroundColor:
@@ -212,25 +211,6 @@ export default function App() {
           ? "#a00000"
           : "red",
     };
-  }
-  function handleUpdateScore(userName, studentId, assignmentName, newScore) {
-    setData((prevData) =>
-      prevData.map((teacher) => ({
-        ...teacher,
-        allStudents: teacher.allStudents.map((student) =>
-          student.userName === userName
-            ? {
-                ...student,
-                studentAssignment: student.studentAssignment.map((assignment) =>
-                  assignment.assignmentName === assignmentName
-                    ? { ...assignment, score: newScore }
-                    : assignment
-                ),
-              }
-            : student
-        ),
-      }))
-    );
   }
   //
   return (
@@ -502,9 +482,7 @@ function DisplayInterface({
     <section className="displayInterface">
       {currentStudent ? (
         <div className="interfaceDisplay">
-          <div className="studentID">
-            {/* ... */}
-          </div>
+          <div className="studentID">{/* ... */}</div>
           {/* ... */}
           <div className="assignmentContainer">
             {currentStudent.studentAssignment.map((assignmentObj, index) => (
