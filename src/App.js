@@ -259,27 +259,32 @@ function AssignmentInfo({ currentAssignment, currentTeacher }) {
           <div className="listOfStudents">
             {currentTeacher &&
               currentTeacher.allStudents.map((obj) => (
-                <div className="studentNameAssignment">
-                  <div className="studentName">
-                    <p>{obj.firstName}</p>
-                    <p>{obj.lastName}</p>
-                  </div>
-                  <input
-                    type="text"
-                    value={
-                      obj.studentAssignment.find(
-                        (obj) =>
-                          obj.assignmentName ===
-                          currentAssignment.assignmentName
-                      ).score
-                    }
-                  />
-                </div>
+                <AssignmentInfoStudent
+                  obj={obj}
+                  currentAssignment={currentAssignment}
+                />
               ))}
           </div>
         </>
       )}
     </section>
+  );
+}
+
+function AssignmentInfoStudent({ obj, currentAssignment }) {
+  const [assignmentScore, setAssignmentScore] = useState(
+    obj.studentAssignment.find(
+      (obj) => obj.assignmentName === currentAssignment.assignmentName
+    ).score
+  );
+  return (
+    <div className="studentNameAssignment">
+      <div className="studentName">
+        <p>{obj.firstName}</p>
+        <p>{obj.lastName}</p>
+      </div>
+      <input type="text" value={assignmentScore} />
+    </div>
   );
 }
 
