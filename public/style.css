@@ -598,5 +598,5 @@ svg {
 }
 
 .specificAssignment:hover {
-  background-color: #b83d00;
+  border-left: 6px solid black;
 }

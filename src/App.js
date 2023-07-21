@@ -233,106 +233,13 @@ export default function App() {
         determineGradeColor={determineGradeColor}
         currentTeacher={currentTeacher}
         setCurrentAssignment={setCurrentAssignment}
+        currentAssignment={currentAssignment}
       />
       <AssignmentInfo currentAssignment={currentAssignment} />
     </>
   );
 }
 
-function DisplayInterface({
-  currentStudent,
-  determineGradeColor,
-  currentTeacher,
-  setCurrentAssignment,
-}) {
-  function determineGradeLetter(grade) {
-    if (grade <= 100 && grade >= 95) {
-      return "A+";
-    }
-    if (grade <= 94 && grade >= 90) {
-      return "A-";
-    }
-    if (grade <= 89 && grade >= 85) {
-      return "B+";
-    }
-    if (grade <= 84 && grade >= 80) {
-      return "B-";
-    }
-    if (grade <= 79 && grade >= 75) {
-      return "C+";
-    }
-    if (grade <= 74 && grade >= 70) {
-      return "C-";
-    }
-    if (grade <= 69) {
-      return "Fail";
-    }
-  }
-  function handleCurrentAssignment(assignmentName) {
-    setCurrentAssignment((prev) => {
-      return currentTeacher.assignments.find(
-        (obj) => obj.assignmentName === assignmentName
-      );
-    });
-  }
-  return (
-    <section className="displayInterface">
-      {currentStudent ? (
-        <div className="interfaceDisplay">
-          <div className="studentID">
-            <p>student id:</p>
-            <p>{currentStudent.studentId}</p>
-          </div>
-          <div className="name">
-            <p>{currentStudent.firstName}</p>
-            <p>{currentStudent.lastName}</p>
-          </div>
-          <div className="studentAverage">
-            <p>student avg:</p>
-            <p>{currentStudent.average}</p>
-          </div>
-          <div className="entry">
-            <p>Entry</p>
-          </div>
-          <div className="assignment">
-            <p>Assignment</p>
-          </div>
-          <div className="grade">
-            <p>Grade</p>
-          </div>
-          <div className="assignmentContainer">
-            {currentStudent.studentAssignment.map((assignmentObj, index) => (
-              <div
-                className="specificAssignment"
-                onClick={() =>
-                  handleCurrentAssignment(assignmentObj.assignmentName)
-                }
-              >
-                <div className="entryNumber">
-                  <p>{index + 1}</p>
-                </div>
-                <div className="specificAssignmentInfo">
-                  <div>
-                    <p>{assignmentObj.assignmentName}</p>
-                  </div>
-                  <p>{assignmentObj.assignmentDescription}</p>
-                </div>
-                <div className="assignmentGrade">
-                  <p style={determineGradeColor(assignmentObj.score)}>
-                    {assignmentObj.score}
-                  </p>
-                  <p>{determineGradeLetter(assignmentObj.score)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : (
-        ""
-      )}
-    </section>
-  );
-}
 function AssignmentInfo({ currentAssignment }) {
   return (
     <section className="assignmentInfo">
@@ -499,5 +406,110 @@ function Nav({
         </form>
       )}
     </nav>
+  );
+}
+
+function DisplayInterface({
+  currentStudent,
+  determineGradeColor,
+  currentTeacher,
+  setCurrentAssignment,
+  currentAssignment,
+}) {
+  function determineGradeLetter(grade) {
+    if (grade <= 100 && grade >= 95) {
+      return "A+";
+    }
+    if (grade <= 94 && grade >= 90) {
+      return "A-";
+    }
+    if (grade <= 89 && grade >= 85) {
+      return "B+";
+    }
+    if (grade <= 84 && grade >= 80) {
+      return "B-";
+    }
+    if (grade <= 79 && grade >= 75) {
+      return "C+";
+    }
+    if (grade <= 74 && grade >= 70) {
+      return "C-";
+    }
+    if (grade <= 69) {
+      return "Fail";
+    }
+  }
+  function handleCurrentAssignment(assignmentName) {
+    setCurrentAssignment((prev) => {
+      return currentTeacher.assignments.find(
+        (obj) => obj.assignmentName === assignmentName
+      );
+    });
+  }
+  return (
+    <section className="displayInterface">
+      {currentStudent ? (
+        <div className="interfaceDisplay">
+          <div className="studentID">
+            <p>student id:</p>
+            <p>{currentStudent.studentId}</p>
+          </div>
+          <div className="name">
+            <p>{currentStudent.firstName}</p>
+            <p>{currentStudent.lastName}</p>
+          </div>
+          <div className="studentAverage">
+            <p>student avg:</p>
+            <p>{currentStudent.average}</p>
+          </div>
+          <div className="entry">
+            <p>Entry</p>
+          </div>
+          <div className="assignment">
+            <p>Assignment</p>
+          </div>
+          <div className="grade">
+            <p>Grade</p>
+          </div>
+          <div className="assignmentContainer">
+            {currentStudent.studentAssignment.map((assignmentObj, index) => (
+              <div
+                className="specificAssignment"
+                style={{
+                  backgroundColor:
+                    currentAssignment &&
+                    assignmentObj.assignmentName ===
+                      currentAssignment.assignmentName
+                      ? "#a33600"
+                      : "",
+                }}
+                onClick={() =>
+                  handleCurrentAssignment(assignmentObj.assignmentName)
+                }
+                key={index}
+              >
+                <div className="entryNumber">
+                  <p>{index + 1}</p>
+                </div>
+                <div className="specificAssignmentInfo">
+                  <div>
+                    <p>{assignmentObj.assignmentName}</p>
+                  </div>
+                  <p>{assignmentObj.assignmentDescription}</p>
+                </div>
+                <div className="assignmentGrade">
+                  <p style={determineGradeColor(assignmentObj.score)}>
+                    {assignmentObj.score}
+                  </p>
+                  <p>{determineGradeLetter(assignmentObj.score)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
+    </section>
   );
 }
