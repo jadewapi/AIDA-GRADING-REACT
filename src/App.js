@@ -519,26 +519,9 @@ function DisplayInterface({
       {currentStudent ? (
         <div className="interfaceDisplay">
           <div className="studentID">
-            <p>student id:</p>
-            <p>{currentStudent.studentId}</p>
+            {/* ... */}
           </div>
-          <div className="name">
-            <p>{currentStudent.firstName}</p>
-            <p>{currentStudent.lastName}</p>
-          </div>
-          <div className="studentAverage">
-            <p>student avg:</p>
-            <p>{currentStudent.average}</p>
-          </div>
-          <div className="entry">
-            <p>Entry</p>
-          </div>
-          <div className="assignment">
-            <p>Assignment</p>
-          </div>
-          <div className="grade">
-            <p>Grade</p>
-          </div>
+          {/* ... */}
           <div className="assignmentContainer">
             {currentStudent.studentAssignment.map((assignmentObj, index) => (
               <div
