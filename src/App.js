@@ -218,6 +218,8 @@ export default function App() {
       <Nav
         currentTeacher={currentTeacher}
         setCurrentTeacher={setCurrentTeacher}
+        setCurrentStudent={setCurrentStudent}
+        setCurrentAssignment={setCurrentAssignment}
       />
       <Headers />
       <AllStudents
@@ -234,28 +236,6 @@ export default function App() {
       />
       <AssignmentInfo currentAssignment={currentAssignment} />
     </>
-  );
-}
-function AssignmentInfo({ currentAssignment }) {
-  return (
-    <section className="assignmentInfo">
-      <div className="specificAssignmentMenu">
-        <p>{currentAssignment.assignmentName}</p>
-        <div className="specificStats">
-          <p>avg:</p>
-          <p>{currentAssignment.assignmentAverage}</p>
-        </div>
-      </div>
-      <div className="listOfStudents">
-        <div className="studentNameAssignment">
-          <div className="studentName">
-            <p>Jade</p>
-            <p>Pineda</p>
-          </div>
-          <input type="text" />
-        </div>
-      </div>
-    </section>
   );
 }
 
@@ -353,6 +333,32 @@ function DisplayInterface({
     </section>
   );
 }
+function AssignmentInfo({ currentAssignment }) {
+  return (
+    <section className="assignmentInfo">
+      {currentAssignment && (
+        <>
+          <div className="specificAssignmentMenu">
+            <p>{currentAssignment.assignmentName}</p>
+            <div className="specificStats">
+              <p>avg:</p>
+              <p>{currentAssignment.assignmentAverage}</p>
+            </div>
+          </div>
+          <div className="listOfStudents">
+            <div className="studentNameAssignment">
+              <div className="studentName">
+                <p>Jade</p>
+                <p>Pineda</p>
+              </div>
+              <input type="text" />
+            </div>
+          </div>
+        </>
+      )}
+    </section>
+  );
+}
 
 function AllStudents({
   currentTeacher,
@@ -415,7 +421,12 @@ function Headers() {
   );
 }
 
-function Nav({ currentTeacher, setCurrentTeacher }) {
+function Nav({
+  currentTeacher,
+  setCurrentTeacher,
+  setCurrentStudent,
+  setCurrentAssignment,
+}) {
   const [userName, setUserName] = useState("");
   const [pin, setPin] = useState("");
   function handleUserName(value) {
@@ -444,6 +455,8 @@ function Nav({ currentTeacher, setCurrentTeacher }) {
   }
   function handleLogout() {
     setCurrentTeacher(undefined);
+    setCurrentStudent(undefined);
+    setCurrentAssignment(undefined);
   }
   return (
     <nav className="topMenu">
