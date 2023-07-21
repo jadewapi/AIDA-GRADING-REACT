@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const data = [
   {
@@ -200,6 +200,7 @@ export default function App() {
   const [currentTeacher, setCurrentTeacher] = useState(undefined);
   const [currentStudent, setCurrentStudent] = useState(undefined);
   const [currentAssignment, setCurrentAssignment] = useState(undefined);
+  const [allTeachersData, setAllTeachersData] = useState(data);
   function determineGradeColor(grade) {
     return {
       backgroundColor:
@@ -211,6 +212,34 @@ export default function App() {
           ? "#a00000"
           : "red",
     };
+  }
+  function handleUpdateScore(teacherId, studentId, assignmentName, newScore) {
+    setAllTeachersData((prevData) => {
+      return prevData.map((teacher) => {
+        if (teacher.userName === teacherId) {
+          return {
+            ...teacher,
+            allStudents: teacher.allStudents.map((student) => {
+              if (student.studentId === studentId) {
+                return {
+                  ...student,
+                  studentAssignment: student.studentAssignment.map(
+                    (assignment) => {
+                      if (assignment.assignmentName === assignmentName) {
+                        return { ...assignment, score: newScore };
+                      }
+                      return assignment;
+                    }
+                  ),
+                };
+              }
+              return student;
+            }),
+          };
+        }
+        return teacher;
+      });
+    });
   }
   //
   return (
@@ -244,7 +273,11 @@ export default function App() {
   );
 }
 
-function AssignmentInfo({ currentAssignment, currentTeacher }) {
+function AssignmentInfo({
+  currentAssignment,
+  currentTeacher,
+  setCurrentTeacher,
+}) {
   return (
     <section className="assignmentInfo">
       {currentAssignment && (
@@ -258,11 +291,19 @@ function AssignmentInfo({ currentAssignment, currentTeacher }) {
           </div>
           <div className="listOfStudents">
             {currentTeacher &&
-              currentTeacher.allStudents.map((obj) => (
-                <AssignmentInfoStudent
-                  obj={obj}
-                  currentAssignment={currentAssignment}
-                />
+              currentTeacher.allStudents.map((obj, index) => (
+                <div className="studentNameAssignment">
+                  <div className="studentName" key={index}>
+                    <p>{obj.firstName}</p>
+                    <p>{obj.lastName}</p>
+                  </div>
+                  <StudentInputAssignment
+                    obj={obj}
+                    currentAssignment={currentAssignment}
+                    currentTeacher={currentTeacher}
+                    setCurrentTeacher={setCurrentTeacher}
+                  />
+                </div>
               ))}
           </div>
         </>
@@ -271,20 +312,31 @@ function AssignmentInfo({ currentAssignment, currentTeacher }) {
   );
 }
 
-function AssignmentInfoStudent({ obj, currentAssignment }) {
-  const [assignmentScore, setAssignmentScore] = useState(
-    obj.studentAssignment.find(
-      (obj) => obj.assignmentName === currentAssignment.assignmentName
-    ).score
-  );
+function StudentInputAssignment({ obj, currentAssignment }) {
+  const [score, setScore] = useState("");
+
+  useEffect(() => {
+    const assignment = obj.studentAssignment.find(
+      (assignmentObj) =>
+        assignmentObj.assignmentName === currentAssignment.assignmentName
+    );
+
+    // If the assignment is found, set the score to the corresponding value
+    if (assignment) {
+      setScore(assignment.score);
+    } else {
+      // Handle the case when the assignment is not found (optional)
+      // For example, set the score to a default value or an empty string
+      setScore("");
+    }
+  }, [obj, currentAssignment]);
+
   return (
-    <div className="studentNameAssignment">
-      <div className="studentName">
-        <p>{obj.firstName}</p>
-        <p>{obj.lastName}</p>
-      </div>
-      <input type="text" value={assignmentScore} />
-    </div>
+    <input
+      type="text"
+      value={score}
+      onChange={(e) => setScore(e.target.value)}
+    />
   );
 }
 
@@ -462,11 +514,15 @@ function DisplayInterface({
   }
   function handleCurrentAssignment(assignmentName) {
     setCurrentAssignment((prev) => {
-      return currentTeacher.assignments.find(
-        (obj) => obj.assignmentName === assignmentName
-      );
+      if (currentTeacher && currentTeacher.assignments) {
+        return currentTeacher.assignments.find(
+          (obj) => obj.assignmentName === assignmentName
+        );
+      }
+      return prev;
     });
   }
+
   return (
     <section className="displayInterface">
       {currentStudent ? (
