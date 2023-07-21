@@ -231,6 +231,7 @@ export default function App() {
         determineGradeColor={determineGradeColor}
         currentTeacher={currentTeacher}
         setCurrentAssignment={setCurrentAssignment}
+        currentAssignment={currentAssignment}
       />
       <AssignmentInfo currentAssignment={currentAssignment} />
     </>
@@ -264,6 +265,7 @@ function DisplayInterface({
   determineGradeColor,
   currentTeacher,
   setCurrentAssignment,
+  currentAssignment,
 }) {
   function determineGradeLetter(grade) {
     if (grade <= 100 && grade >= 95) {
