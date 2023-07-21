@@ -200,7 +200,7 @@ export default function App() {
   const [currentTeacher, setCurrentTeacher] = useState(undefined);
   const [currentStudent, setCurrentStudent] = useState(undefined);
   const [currentAssignment, setCurrentAssignment] = useState(undefined);
-  const [allTeachersData, setAllTeachersData] = useState(data);
+  const [data, setData] = useState([...]);
   function determineGradeColor(grade) {
     return {
       backgroundColor:
@@ -213,33 +213,24 @@ export default function App() {
           : "red",
     };
   }
-  function handleUpdateScore(teacherId, studentId, assignmentName, newScore) {
-    setAllTeachersData((prevData) => {
-      return prevData.map((teacher) => {
-        if (teacher.userName === teacherId) {
-          return {
-            ...teacher,
-            allStudents: teacher.allStudents.map((student) => {
-              if (student.studentId === studentId) {
-                return {
-                  ...student,
-                  studentAssignment: student.studentAssignment.map(
-                    (assignment) => {
-                      if (assignment.assignmentName === assignmentName) {
-                        return { ...assignment, score: newScore };
-                      }
-                      return assignment;
-                    }
-                  ),
-                };
+  function handleUpdateScore(userName, studentId, assignmentName, newScore) {
+    setData((prevData) =>
+      prevData.map((teacher) => ({
+        ...teacher,
+        allStudents: teacher.allStudents.map((student) =>
+          student.userName === userName
+            ? {
+                ...student,
+                studentAssignment: student.studentAssignment.map((assignment) =>
+                  assignment.assignmentName === assignmentName
+                    ? { ...assignment, score: newScore }
+                    : assignment
+                ),
               }
-              return student;
-            }),
-          };
-        }
-        return teacher;
-      });
-    });
+            : student
+        ),
+      }))
+    );
   }
   //
   return (
@@ -267,7 +258,7 @@ export default function App() {
       <AssignmentInfo
         currentAssignment={currentAssignment}
         currentTeacher={currentTeacher}
-        setCurrentTeacher={setCurrentTeacher}
+        handleUpdateScore={handleUpdateScore}
       />
     </>
   );
@@ -276,7 +267,7 @@ export default function App() {
 function AssignmentInfo({
   currentAssignment,
   currentTeacher,
-  setCurrentTeacher,
+  handleUpdateScore,
 }) {
   return (
     <section className="assignmentInfo">
@@ -301,7 +292,7 @@ function AssignmentInfo({
                     obj={obj}
                     currentAssignment={currentAssignment}
                     currentTeacher={currentTeacher}
-                    setCurrentTeacher={setCurrentTeacher}
+                    handleUpdateScore={handleUpdateScore}
                   />
                 </div>
               ))}
@@ -312,18 +303,7 @@ function AssignmentInfo({
   );
 }
 
-function StudentInputAssignment({
-  obj,
-  currentAssignment,
-  currentTeacher,
-  handleUpdateScore,
-}) {
-  const handleChange = (e) => {
-    const newScore = e.target.value;
-    const { assignmentName } = currentAssignment;
-    const { userName, studentId } = currentTeacher;
-    handleUpdateScore(userName, studentId, assignmentName, newScore);
-  };
+function StudentInputAssignment({ obj, currentAssignment, handleUpdateScore }) {
   const [score, setScore] = useState("");
 
   useEffect(() => {
@@ -338,17 +318,17 @@ function StudentInputAssignment({
     } else {
       // Handle the case when the assignment is not found (optional)
       // For example, set the score to a default value or an empty string
-      setScore("");
+      setScore(""); // You can set a default value here
     }
   }, [obj, currentAssignment]);
 
-  return (
-    <input
-      type="text"
-      value={score}
-      onChange={(e) => setScore(e.target.value)}
-    />
-  );
+  const handleChange = (e) => {
+    const newScore = e.target.value;
+    setScore(newScore); // Update the score state whenever the input value changes
+    handleUpdateScore(obj, currentAssignment.assignmentName, newScore);
+  };
+
+  return <input type="text" value={score} onChange={handleChange} />;
 }
 
 function AllStudents({
