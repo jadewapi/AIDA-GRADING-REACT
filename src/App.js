@@ -272,18 +272,20 @@ function AssignmentInfo({ currentAssignment, currentTeacher }) {
 }
 
 function AssignmentInfoStudent({ obj, currentAssignment }) {
-  const [assignmentScore, setAssignmentScore] = useState(
-    obj.studentAssignment.find(
-      (obj) => obj.assignmentName === currentAssignment.assignmentName
-    ).score
-  );
   return (
     <div className="studentNameAssignment">
       <div className="studentName">
         <p>{obj.firstName}</p>
         <p>{obj.lastName}</p>
       </div>
-      <input type="text" value={assignmentScore} />
+      <input
+        type="text"
+        value={
+          obj.studentAssignment.find(
+            (obj) => obj.assignmentName === currentAssignment.assignmentName
+          ).score
+        }
+      />
     </div>
   );
 }
