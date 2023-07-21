@@ -312,7 +312,18 @@ function AssignmentInfo({
   );
 }
 
-function StudentInputAssignment({ obj, currentAssignment }) {
+function StudentInputAssignment({
+  obj,
+  currentAssignment,
+  currentTeacher,
+  handleUpdateScore,
+}) {
+  const handleChange = (e) => {
+    const newScore = e.target.value;
+    const { assignmentName } = currentAssignment;
+    const { userName, studentId } = currentTeacher;
+    handleUpdateScore(userName, studentId, assignmentName, newScore);
+  };
   const [score, setScore] = useState("");
 
   useEffect(() => {
