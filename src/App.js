@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const data = [
   {
@@ -244,7 +244,11 @@ export default function App() {
   );
 }
 
-function AssignmentInfo({ currentAssignment, currentTeacher }) {
+function AssignmentInfo({
+  currentAssignment,
+  currentTeacher,
+  setCurrentTeacher,
+}) {
   return (
     <section className="assignmentInfo">
       {currentAssignment && (
@@ -258,10 +262,12 @@ function AssignmentInfo({ currentAssignment, currentTeacher }) {
           </div>
           <div className="listOfStudents">
             {currentTeacher &&
-              currentTeacher.allStudents.map((obj) => (
+              currentTeacher.allStudents.map((obj, currentTeacher) => (
                 <AssignmentInfoStudent
                   obj={obj}
+                  key={obj.studentId} // Use a unique identifier as the key
                   currentAssignment={currentAssignment}
+                  setCurrentTeacher={setCurrentTeacher}
                 />
               ))}
           </div>
@@ -271,20 +277,59 @@ function AssignmentInfo({ currentAssignment, currentTeacher }) {
   );
 }
 
-function AssignmentInfoStudent({ obj, currentAssignment }) {
+function AssignmentInfoStudent({
+  obj,
+  currentAssignment,
+  setCurrentTeacher,
+  currentTeacher,
+}) {
+  const [score, setScore] = useState(0);
+
+  useEffect(() => {
+    const assignmentObj = obj.studentAssignment.find(
+      (obj) => obj.assignmentName === currentAssignment.assignmentName
+    );
+    setScore(assignmentObj.score);
+  }, [currentAssignment]);
+
+  function updateAssignment(newScore) {
+    const updatedStudents = currentTeacher.allStudents.map((student) => {
+      if (student.studentId === obj.studentId) {
+        const updatedStudentAssignment = student.studentAssignment.map(
+          (assignment) => {
+            if (
+              assignment.assignmentName === currentAssignment.assignmentName
+            ) {
+              return { ...assignment, score: newScore };
+            }
+            return assignment;
+          }
+        );
+        return { ...student, studentAssignment: updatedStudentAssignment };
+      }
+      return student;
+    });
+
+    setCurrentTeacher((prev) => ({
+      ...prev,
+      allStudents: updatedStudents,
+    }));
+  }
+
   return (
-    <div className="studentNameAssignment">
+    <div className="studentNameAssignment" key={obj.studentId}>
       <div className="studentName">
         <p>{obj.firstName}</p>
         <p>{obj.lastName}</p>
       </div>
       <input
         type="text"
-        value={
-          obj.studentAssignment.find(
-            (obj) => obj.assignmentName === currentAssignment.assignmentName
-          ).score
-        }
+        value={score}
+        onChange={(e) => {
+          const newScore = Number(e.target.value);
+          setScore(newScore);
+          updateAssignment(newScore);
+        }}
       />
     </div>
   );
