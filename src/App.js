@@ -243,7 +243,7 @@ export default function App() {
 function AssignmentInfo({ currentAssignment }) {
   return (
     <section className="assignmentInfo">
-      {currentAssignment && currentTeacher ? (
+      {currentAssignment && (
         <>
           <div className="specificAssignmentMenu">
             <p>{currentAssignment.assignmentName}</p>
@@ -262,62 +262,8 @@ function AssignmentInfo({ currentAssignment }) {
             </div>
           </div>
         </>
-      ) : (
-        <p>Loading...</p> // You can add a loading state or handle other cases
       )}
     </section>
-  );
-}
-
-function AssignmentInfoStudent({ obj, currentAssignment, setCurrentTeacher }) {
-  const [score, setScore] = useState(0);
-
-  useEffect(() => {
-    const assignmentObj = obj.studentAssignment.find(
-      (obj) => obj.assignmentName === currentAssignment.assignmentName
-    );
-    setScore(assignmentObj.score);
-  }, [currentAssignment]);
-
-  function updateAssignment(newScore) {
-    setCurrentTeacher((prev) => {
-      const updatedStudents = prev.allStudents.map((student) => {
-        if (student.studentId === obj.studentId) {
-          const updatedStudentAssignment = student.studentAssignment.map(
-            (assignment) => {
-              if (
-                assignment.assignmentName === currentAssignment.assignmentName
-              ) {
-                return { ...assignment, score: newScore };
-              }
-              return assignment;
-            }
-          );
-          return { ...student, studentAssignment: updatedStudentAssignment };
-        }
-        return student;
-      });
-
-      return { ...prev, allStudents: updatedStudents };
-    });
-  }
-
-  return (
-    <div className="studentNameAssignment" key={obj.studentId}>
-      <div className="studentName">
-        <p>{obj.firstName}</p>
-        <p>{obj.lastName}</p>
-      </div>
-      <input
-        type="text"
-        value={score}
-        onChange={(e) => {
-          const newScore = Number(e.target.value);
-          setScore(newScore);
-          updateAssignment(newScore);
-        }}
-      />
-    </div>
   );
 }
 
@@ -503,7 +449,7 @@ function DisplayInterface({
   return (
     <section className="displayInterface">
       {currentStudent ? (
-        <div className="interfaceDisplay">
+        <div className="interfaceDisplay" key={currentStudent.studentId}>
           <div className="studentID">
             <p>student id:</p>
             <p>{currentStudent.studentId}</p>
