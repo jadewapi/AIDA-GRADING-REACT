@@ -272,6 +272,7 @@ function AssignmentInfo({
           </div>
         </>
       ) : (
+        <p>Loading...</p> // You can add a loading state or handle other cases
       )}
     </section>
   );
