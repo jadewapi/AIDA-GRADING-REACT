@@ -251,7 +251,7 @@ function AssignmentInfo({
 }) {
   return (
     <section className="assignmentInfo">
-      {currentAssignment && (
+      {currentAssignment && currentTeacher ? (
         <>
           <div className="specificAssignmentMenu">
             <p>{currentAssignment.assignmentName}</p>
@@ -261,28 +261,23 @@ function AssignmentInfo({
             </div>
           </div>
           <div className="listOfStudents">
-            {currentTeacher &&
-              currentTeacher.allStudents.map((obj, currentTeacher) => (
-                <AssignmentInfoStudent
-                  obj={obj}
-                  key={obj.studentId} // Use a unique identifier as the key
-                  currentAssignment={currentAssignment}
-                  setCurrentTeacher={setCurrentTeacher}
-                />
-              ))}
+            {currentTeacher.allStudents.map((obj) => (
+              <AssignmentInfoStudent
+                key={obj.studentId}
+                obj={obj}
+                currentAssignment={currentAssignment}
+                setCurrentTeacher={setCurrentTeacher}
+              />
+            ))}
           </div>
         </>
+      ) : (
       )}
     </section>
   );
 }
 
-function AssignmentInfoStudent({
-  obj,
-  currentAssignment,
-  setCurrentTeacher,
-  currentTeacher,
-}) {
+function AssignmentInfoStudent({ obj, currentAssignment, setCurrentTeacher }) {
   const [score, setScore] = useState(0);
 
   useEffect(() => {
@@ -293,27 +288,26 @@ function AssignmentInfoStudent({
   }, [currentAssignment]);
 
   function updateAssignment(newScore) {
-    const updatedStudents = currentTeacher.allStudents.map((student) => {
-      if (student.studentId === obj.studentId) {
-        const updatedStudentAssignment = student.studentAssignment.map(
-          (assignment) => {
-            if (
-              assignment.assignmentName === currentAssignment.assignmentName
-            ) {
-              return { ...assignment, score: newScore };
+    setCurrentTeacher((prev) => {
+      const updatedStudents = prev.allStudents.map((student) => {
+        if (student.studentId === obj.studentId) {
+          const updatedStudentAssignment = student.studentAssignment.map(
+            (assignment) => {
+              if (
+                assignment.assignmentName === currentAssignment.assignmentName
+              ) {
+                return { ...assignment, score: newScore };
+              }
+              return assignment;
             }
-            return assignment;
-          }
-        );
-        return { ...student, studentAssignment: updatedStudentAssignment };
-      }
-      return student;
-    });
+          );
+          return { ...student, studentAssignment: updatedStudentAssignment };
+        }
+        return student;
+      });
 
-    setCurrentTeacher((prev) => ({
-      ...prev,
-      allStudents: updatedStudents,
-    }));
+      return { ...prev, allStudents: updatedStudents };
+    });
   }
 
   return (
