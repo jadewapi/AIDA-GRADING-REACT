@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const data = [
   {
@@ -244,7 +244,40 @@ export default function App() {
   );
 }
 
-function AssignmentInfo({ currentAssignment, currentTeacher }) {
+function AssignmentInfo({
+  currentAssignment,
+  currentTeacher,
+  setCurrentTeacher,
+}) {
+  // Handler for updating the score
+  const handleScoreChange = (studentId, newScore) => {
+    // Find the student in the current teacher's data
+    const updatedStudents = currentTeacher.allStudents.map((student) => {
+      if (student.studentId === studentId) {
+        // Find the assignment in the student's assignments
+        const updatedAssignments = student.studentAssignment.map(
+          (assignment) => {
+            if (
+              assignment.assignmentName === currentAssignment.assignmentName
+            ) {
+              // Return a new object with the updated score
+              return { ...assignment, score: newScore };
+            }
+            return assignment;
+          }
+        );
+
+        // Return a new student object with the updated assignments
+        return { ...student, studentAssignment: updatedAssignments };
+      }
+      return student;
+    });
+
+    // Return a new teacher object with the updated students
+    const updatedTeacher = { ...currentTeacher, allStudents: updatedStudents };
+    setCurrentTeacher(updatedTeacher);
+  };
+
   return (
     <section className="assignmentInfo">
       {currentAssignment && (
@@ -259,7 +292,7 @@ function AssignmentInfo({ currentAssignment, currentTeacher }) {
           <div className="listOfStudents">
             {currentTeacher &&
               currentTeacher.allStudents.map((obj) => (
-                <div className="studentNameAssignment">
+                <div className="studentNameAssignment" key={obj.studentId}>
                   <div className="studentName">
                     <p>{obj.firstName}</p>
                     <p>{obj.lastName}</p>
@@ -268,11 +301,16 @@ function AssignmentInfo({ currentAssignment, currentTeacher }) {
                     type="text"
                     value={
                       obj.studentAssignment.find(
-                        (obj) =>
-                          obj.assignmentName ===
+                        (assignment) =>
+                          assignment.assignmentName ===
                           currentAssignment.assignmentName
                       ).score
                     }
+                    onChange={(e) => {
+                      // Parse the input value to a number and handle the change
+                      const newScore = parseInt(e.target.value, 10);
+                      handleScoreChange(obj.studentId, newScore);
+                    }}
                   />
                 </div>
               ))}
@@ -456,11 +494,13 @@ function DisplayInterface({
     }
   }
   function handleCurrentAssignment(assignmentName) {
-    setCurrentAssignment((prev) => {
-      return currentTeacher.assignments.find(
-        (obj) => obj.assignmentName === assignmentName
-      );
-    });
+    // Find the assignment object from the current teacher's assignments
+    const selectedAssignment = currentTeacher.assignments.find(
+      (obj) => obj.assignmentName === assignmentName
+    );
+
+    // Set the current assignment state to the selected assignment
+    setCurrentAssignment(selectedAssignment);
   }
   return (
     <section className="displayInterface">
