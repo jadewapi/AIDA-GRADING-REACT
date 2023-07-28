@@ -198,6 +198,10 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentTeacher, setCurrentTeacher] = useState(null);
   const [currentStudent, setCurrentStudent] = useState(null);
+  const [currentAssignment, setCurrentAssignment] = useState("");
+  function handleCurrentAssignment(assignmentName) {
+    setCurrentAssignment(assignmentName);
+  }
   return (
     <>
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
@@ -212,9 +216,16 @@ function App() {
         setCurrentStudent={setCurrentStudent}
       />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
-      <DisplayInterface currentStudent={currentStudent} loggedIn={loggedIn} />
+      <DisplayInterface
+        currentStudent={currentStudent}
+        loggedIn={loggedIn}
+        handleCurrentAssignment={handleCurrentAssignment}
+      />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
-      <AssignmentInfo />
+      <AssignmentInfo
+        currentAssignment={currentAssignment}
+        currentTeacher={currentTeacher}
+      />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
       <Buttons />
     </>
@@ -222,7 +233,40 @@ function App() {
 }
 export default App;
 
-function DisplayInterface({ loggedIn, currentStudent }) {
+function AssignmentInfo({ currentTeacher, currentAssignment }) {
+  return (
+    <section class="assignmentInfo">
+      <div class="specificAssignmentMenu">
+        <p>{currentAssignment}</p>
+      </div>
+      <div class="listOfStudents">
+        {currentTeacher?.allStudents.map((studentObj) => {
+          const selectedAssignment = studentObj.studentAssignment.find(
+            (assignmentObj) =>
+              assignmentObj.assignmentName === currentAssignment
+          );
+          return (
+            selectedAssignment && (
+              <div class="studentNameAssignment">
+                <div class="studentName">
+                  <p>{studentObj.firstName}</p>
+                  <p>{studentObj.lastName}</p>
+                </div>
+                <input type="text" />
+              </div>
+            )
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function DisplayInterface({
+  loggedIn,
+  currentStudent,
+  handleCurrentAssignment,
+}) {
   return (
     <section class="displayInterface">
       {loggedIn && currentStudent && (
@@ -249,66 +293,29 @@ function DisplayInterface({ loggedIn, currentStudent }) {
             <p>Grade</p>
           </div>
           <div class="assignmentContainer">
-            <div class="specificAssignment">
-              <div class="entryNumber">
-                <p>100</p>
-              </div>
-              <div class="specificAssignmentInfo">
-                <div>
-                  <p>Assignment Name</p>
+            {currentStudent.studentAssignment.map((assignmentObj, index) => (
+              <div
+                class="specificAssignment"
+                key={assignmentObj.assignmentName}
+                onClick={() =>
+                  handleCurrentAssignment(assignmentObj.assignmentName)
+                }
+              >
+                <div class="entryNumber">
+                  <p>{index + 1}</p>
                 </div>
-                <p>Assignment Description</p>
-              </div>
-              <div class="assignmentGrade">
-                <p>100</p>
-                <p>A+</p>
-              </div>
-            </div>
-            <div class="specificAssignment">
-              <div class="entryNumber">
-                <p>100</p>
-              </div>
-              <div class="specificAssignmentInfo">
-                <div>
-                  <p>Assignment Name</p>
+                <div class="specificAssignmentInfo">
+                  <div>
+                    <p>{assignmentObj.assignmentName}</p>
+                  </div>
+                  <p>{assignmentObj.assignmentDescription}</p>
                 </div>
-                <p>Assignment Description</p>
-              </div>
-              <div class="assignmentGrade">
-                <p>100</p>
-                <p>A+</p>
-              </div>
-            </div>
-            <div class="specificAssignment">
-              <div class="entryNumber">
-                <p>100</p>
-              </div>
-              <div class="specificAssignmentInfo">
-                <div>
-                  <p>Assignment Name</p>
+                <div class="assignmentGrade">
+                  <p>{assignmentObj.score}</p>
+                  <p>A+</p>
                 </div>
-                <p>Assignment Description</p>
               </div>
-              <div class="assignmentGrade">
-                <p>100</p>
-                <p>A+</p>
-              </div>
-            </div>
-            <div class="specificAssignment">
-              <div class="entryNumber">
-                <p>100</p>
-              </div>
-              <div class="specificAssignmentInfo">
-                <div>
-                  <p>Assignment Name</p>
-                </div>
-                <p>Assignment Description</p>
-              </div>
-              <div class="assignmentGrade">
-                <p>100</p>
-                <p>A+</p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       )}
@@ -391,29 +398,6 @@ function Navbar({ data, setCurrentTeacher, setLoggedIn }) {
         </button>
       </form>
     </nav>
-  );
-}
-
-function AssignmentInfo() {
-  return (
-    <section class="assignmentInfo">
-      <div class="specificAssignmentMenu">
-        <p>Assignment Name</p>
-        <div class="specificStats">
-          <p>avg:</p>
-          <p>87</p>
-        </div>
-      </div>
-      <div class="listOfStudents">
-        <div class="studentNameAssignment">
-          <div class="studentName">
-            <p>Jade</p>
-            <p>Pineda</p>
-          </div>
-          <input type="text" />
-        </div>
-      </div>
-    </section>
   );
 }
 
