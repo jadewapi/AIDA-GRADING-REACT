@@ -195,25 +195,170 @@ function App() {
       ],
     },
   ]);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [currentTeacher, setCurrentTeacher] = useState(null);
+  const [currentStudent, setCurrentStudent] = useState(null);
   return (
     <>
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
-      <Navbar />
+      <Navbar
+        data={data}
+        setCurrentTeacher={setCurrentTeacher}
+        setLoggedIn={setLoggedIn}
+      />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
-      <Buttons />
+      <AllStudents
+        currentTeacher={currentTeacher}
+        setCurrentStudent={setCurrentStudent}
+      />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
-      <AllStudents />
-      {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
-      <DisplayInterface />
+      <DisplayInterface currentStudent={currentStudent} loggedIn={loggedIn} />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
       <AssignmentInfo />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
+      <Buttons />
     </>
   );
 }
 export default App;
 
-function Navbar() {
+function DisplayInterface({ loggedIn, currentStudent }) {
+  return (
+    <section class="displayInterface">
+      {loggedIn && currentStudent && (
+        <div class="interfaceDisplay">
+          <div class="studentID">
+            <p>student id:</p>
+            <p>{currentStudent.studentId}</p>
+          </div>
+          <div class="name">
+            <p>{currentStudent.firstName}</p>
+            <p>{currentStudent.lastName}</p>
+          </div>
+          <div class="studentAverage">
+            <p>student avg:</p>
+            <p>{currentStudent.average}</p>
+          </div>
+          <div class="entry">
+            <p>Entry</p>
+          </div>
+          <div class="assignment">
+            <p>Assignment</p>
+          </div>
+          <div class="grade">
+            <p>Grade</p>
+          </div>
+          <div class="assignmentContainer">
+            <div class="specificAssignment">
+              <div class="entryNumber">
+                <p>100</p>
+              </div>
+              <div class="specificAssignmentInfo">
+                <div>
+                  <p>Assignment Name</p>
+                </div>
+                <p>Assignment Description</p>
+              </div>
+              <div class="assignmentGrade">
+                <p>100</p>
+                <p>A+</p>
+              </div>
+            </div>
+            <div class="specificAssignment">
+              <div class="entryNumber">
+                <p>100</p>
+              </div>
+              <div class="specificAssignmentInfo">
+                <div>
+                  <p>Assignment Name</p>
+                </div>
+                <p>Assignment Description</p>
+              </div>
+              <div class="assignmentGrade">
+                <p>100</p>
+                <p>A+</p>
+              </div>
+            </div>
+            <div class="specificAssignment">
+              <div class="entryNumber">
+                <p>100</p>
+              </div>
+              <div class="specificAssignmentInfo">
+                <div>
+                  <p>Assignment Name</p>
+                </div>
+                <p>Assignment Description</p>
+              </div>
+              <div class="assignmentGrade">
+                <p>100</p>
+                <p>A+</p>
+              </div>
+            </div>
+            <div class="specificAssignment">
+              <div class="entryNumber">
+                <p>100</p>
+              </div>
+              <div class="specificAssignmentInfo">
+                <div>
+                  <p>Assignment Name</p>
+                </div>
+                <p>Assignment Description</p>
+              </div>
+              <div class="assignmentGrade">
+                <p>100</p>
+                <p>A+</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function AllStudents({ currentTeacher, setCurrentStudent }) {
+  function handleCurrentStudent(studentId) {
+    setCurrentStudent((prev) =>
+      currentTeacher.allStudents.find(
+        (studentObj) => studentObj.studentId === studentId
+      )
+    );
+  }
+  return (
+    <section class="allStudents">
+      {currentTeacher &&
+        currentTeacher.allStudents.map((studentObj) => (
+          <div
+            class="specificStudent"
+            onClick={() => handleCurrentStudent(studentObj.studentId)}
+            key={studentObj.studentId}
+          >
+            <div class="specificStudentContainer">
+              <p class="specificStudentFirstName">{studentObj.firstName}</p>
+              <p class="specificStudentLastName">{studentObj.lastName}</p>
+              <p class="specificStudentScore">{studentObj.average}</p>
+            </div>
+          </div>
+        ))}
+    </section>
+  );
+}
+
+function Navbar({ data, setCurrentTeacher, setLoggedIn }) {
+  const [userPin, setUserPin] = useState("");
+  const [userName, setUserName] = useState("");
+  function handleSubmitTeacherLogin(e) {
+    e.preventDefault();
+    const teacher = data.find(
+      (teacherObj) =>
+        teacherObj.userName === userName && teacherObj.userPin === userPin
+    );
+    if (teacher) {
+      setCurrentTeacher(teacher);
+      setLoggedIn(true);
+    }
+  }
+
   return (
     <nav class="topMenu">
       <div class="logoContainer">
@@ -249,187 +394,6 @@ function Navbar() {
   );
 }
 
-function Buttons() {
-  return (
-    <>
-      <div class="students">
-        <p>Students</p>
-      </div>
-      <div class="interface">
-        <button class="interfaceButon">Interface</button>
-      </div>
-      <div class="manageAssignment">
-        <button class="assignmentsButton">Assignments</button>
-      </div>
-      <div class="menu">
-        <p>Menu</p>
-      </div>
-    </>
-  );
-}
-
-function AllStudents() {
-  return (
-    <section class="allStudents">
-      <div class="specificStudent">
-        <div class="specificStudentContainer">
-          <p class="specificStudentFirstName">Jadsfdsfde</p>
-          <p class="specificStudentLastName">Pineda</p>
-          <p class="specificStudentScore">98</p>
-        </div>
-      </div>
-      <div class="specificStudent">
-        <div class="specificStudentContainer">
-          <p class="specificStudentFirstName">Jadsfdsfde</p>
-          <p class="specificStudentLastName">Pineda</p>
-          <p class="specificStudentScore">98</p>
-        </div>
-      </div>
-      <div class="specificStudent">
-        <div class="specificStudentContainer">
-          <p class="specificStudentFirstName">Jadsfdsfde</p>
-          <p class="specificStudentLastName">Pineda</p>
-          <p class="specificStudentScore">98</p>
-        </div>
-      </div>
-      <div class="specificStudent">
-        <div class="specificStudentContainer">
-          <p class="specificStudentFirstName">Jadsfdsfde</p>
-          <p class="specificStudentLastName">Pineda</p>
-          <p class="specificStudentScore">98</p>
-        </div>
-      </div>
-      <div class="specificStudent">
-        <div class="specificStudentContainer">
-          <p class="specificStudentFirstName">Jadsfdsfde</p>
-          <p class="specificStudentLastName">Pineda</p>
-          <p class="specificStudentScore">98</p>
-        </div>
-      </div>
-      <div class="specificStudent">
-        <div class="specificStudentContainer">
-          <p class="specificStudentFirstName">Jadsfdsfde</p>
-          <p class="specificStudentLastName">Pineda</p>
-          <p class="specificStudentScore">98</p>
-        </div>
-      </div>
-      <div class="specificStudent">
-        <div class="specificStudentContainer">
-          <p class="specificStudentFirstName">Jadsfdsfde</p>
-          <p class="specificStudentLastName">Pineda</p>
-          <p class="specificStudentScore">98</p>
-        </div>
-      </div>
-      <div class="specificStudent">
-        <div class="specificStudentContainer">
-          <p class="specificStudentFirstName">Jadsfdsfde</p>
-          <p class="specificStudentLastName">Pineda</p>
-          <p class="specificStudentScore">98</p>
-        </div>
-      </div>
-      <div class="specificStudent">
-        <div class="specificStudentContainer">
-          <p class="specificStudentFirstName">Jadsfdsfde</p>
-          <p class="specificStudentLastName">Pineda</p>
-          <p class="specificStudentScore">98</p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function DisplayInterface() {
-  return (
-    <section class="displayInterface">
-      <div class="interfaceDisplay">
-        <div class="studentID">
-          <p>student id:</p>
-          <p>239</p>
-        </div>
-        <div class="name">
-          <p>Jade</p>
-          <p>Pineda</p>
-        </div>
-        <div class="studentAverage">
-          <p>student avg:</p>
-          <p>87</p>
-        </div>
-        <div class="entry">
-          <p>Entry</p>
-        </div>
-        <div class="assignment">
-          <p>Assignment</p>
-        </div>
-        <div class="grade">
-          <p>Grade</p>
-        </div>
-        <div class="assignmentContainer">
-          <div class="specificAssignment">
-            <div class="entryNumber">
-              <p>100</p>
-            </div>
-            <div class="specificAssignmentInfo">
-              <div>
-                <p>Assignment Name</p>
-              </div>
-              <p>Assignment Description</p>
-            </div>
-            <div class="assignmentGrade">
-              <p>100</p>
-              <p>A+</p>
-            </div>
-          </div>
-          <div class="specificAssignment">
-            <div class="entryNumber">
-              <p>100</p>
-            </div>
-            <div class="specificAssignmentInfo">
-              <div>
-                <p>Assignment Name</p>
-              </div>
-              <p>Assignment Description</p>
-            </div>
-            <div class="assignmentGrade">
-              <p>100</p>
-              <p>A+</p>
-            </div>
-          </div>
-          <div class="specificAssignment">
-            <div class="entryNumber">
-              <p>100</p>
-            </div>
-            <div class="specificAssignmentInfo">
-              <div>
-                <p>Assignment Name</p>
-              </div>
-              <p>Assignment Description</p>
-            </div>
-            <div class="assignmentGrade">
-              <p>100</p>
-              <p>A+</p>
-            </div>
-          </div>
-          <div class="specificAssignment">
-            <div class="entryNumber">
-              <p>100</p>
-            </div>
-            <div class="specificAssignmentInfo">
-              <div>
-                <p>Assignment Name</p>
-              </div>
-              <p>Assignment Description</p>
-            </div>
-            <div class="assignmentGrade">
-              <p>100</p>
-              <p>A+</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function AssignmentInfo() {
   return (
     <section class="assignmentInfo">
@@ -450,5 +414,24 @@ function AssignmentInfo() {
         </div>
       </div>
     </section>
+  );
+}
+
+function Buttons() {
+  return (
+    <>
+      <div class="students">
+        <p>Students</p>
+      </div>
+      <div class="interface">
+        <button class="interfaceButon">Interface</button>
+      </div>
+      <div class="manageAssignment">
+        <button class="assignmentsButton">Assignments</button>
+      </div>
+      <div class="menu">
+        <p>Menu</p>
+      </div>
+    </>
   );
 }
