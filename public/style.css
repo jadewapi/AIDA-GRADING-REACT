@@ -593,6 +593,10 @@ svg {
 
 /* end assignment info */
 
+.interfaceButon:hover {
+  border: 4px solid black;
+}
+
 .assignmentsButton:hover {
   border: 4px solid black;
 }
