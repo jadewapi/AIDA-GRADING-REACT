@@ -202,6 +202,32 @@ function App() {
   function handleCurrentAssignment(assignmentName) {
     setCurrentAssignment(assignmentName);
   }
+  function handleScoreChange(studentId, score) {
+    setCurrentTeacher((prev) => {
+      if (prev) {
+        const updatedTeacher = { ...prev };
+        const studentToUpdate = updatedTeacher.allStudents.find(
+          (studentObj) => studentObj.studentId === studentId
+        );
+        if (studentToUpdate) {
+          const assignmentToUpdate = studentToUpdate.studentAssignment.find(
+            (assignmentObj) =>
+              assignmentObj.assignmentName === currentAssignment
+          );
+          if (assignmentToUpdate) {
+            assignmentToUpdate.score = Number(score);
+          }
+        }
+        return updatedTeacher;
+      }
+      return prev;
+    });
+  }
+  function currentAssignmentClicked(assignmentName) {
+    if (currentAssignment.assignmentName === assignmentName) {
+      return { backgroundColor: "black" };
+    }
+  }
   return (
     <>
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
@@ -220,11 +246,13 @@ function App() {
         currentStudent={currentStudent}
         loggedIn={loggedIn}
         handleCurrentAssignment={handleCurrentAssignment}
+        currentAssignmentClicked={currentAssignmentClicked}
       />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
       <AssignmentInfo
         currentAssignment={currentAssignment}
         currentTeacher={currentTeacher}
+        handleScoreChange={handleScoreChange}
       />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
       <Buttons />
@@ -233,7 +261,11 @@ function App() {
 }
 export default App;
 
-function AssignmentInfo({ currentTeacher, currentAssignment }) {
+function AssignmentInfo({
+  currentTeacher,
+  currentAssignment,
+  handleScoreChange,
+}) {
   return (
     <section class="assignmentInfo">
       <div class="specificAssignmentMenu">
@@ -247,12 +279,20 @@ function AssignmentInfo({ currentTeacher, currentAssignment }) {
           );
           return (
             selectedAssignment && (
-              <div class="studentNameAssignment">
+              <div class="studentNameAssignment" key={studentObj.studentId}>
                 <div class="studentName">
                   <p>{studentObj.firstName}</p>
                   <p>{studentObj.lastName}</p>
                 </div>
-                <input type="text" />
+                <input
+                  key={`${studentObj.studentId}-${currentAssignment}`}
+                  type="text"
+                  placeholder={selectedAssignment.score}
+                  onChange={(e) =>
+                    handleScoreChange(studentObj.studentId, e.target.value)
+                  }
+                  className="scoreInput"
+                />
               </div>
             )
           );
@@ -266,7 +306,42 @@ function DisplayInterface({
   loggedIn,
   currentStudent,
   handleCurrentAssignment,
+  currentAssignmentClicked,
 }) {
+  function determineGradeLetter(assignmentScore) {
+    const gradeLetter =
+      assignmentScore >= 95
+        ? "A+"
+        : assignmentScore >= 90
+        ? "A-"
+        : assignmentScore >= 85
+        ? "B+"
+        : assignmentScore >= 80
+        ? "B-"
+        : assignmentScore >= 75
+        ? "C+"
+        : assignmentScore >= 70
+        ? "C-"
+        : "Fail";
+    return gradeLetter;
+  }
+  function determineGradeColor(assignmentScore) {
+    let style = { backgroundColor: "black" };
+
+    if (assignmentScore >= 90 && assignmentScore <= 100) {
+      style = { backgroundColor: "green" };
+    }
+
+    if (assignmentScore >= 75 && assignmentScore <= 89) {
+      style = { backgroundColor: "#ddbb00" };
+    }
+
+    if (assignmentScore >= 60 && assignmentScore <= 74) {
+      style = { backgroundColor: "#7b0000" };
+    }
+
+    return style;
+  }
   return (
     <section class="displayInterface">
       {loggedIn && currentStudent && (
@@ -295,6 +370,7 @@ function DisplayInterface({
           <div class="assignmentContainer">
             {currentStudent.studentAssignment.map((assignmentObj, index) => (
               <div
+                style={currentAssignmentClicked(assignmentObj.assignmentName)}
                 class="specificAssignment"
                 key={assignmentObj.assignmentName}
                 onClick={() =>
@@ -311,8 +387,10 @@ function DisplayInterface({
                   <p>{assignmentObj.assignmentDescription}</p>
                 </div>
                 <div class="assignmentGrade">
-                  <p>{assignmentObj.score}</p>
-                  <p>A+</p>
+                  <p style={determineGradeColor(assignmentObj.score)}>
+                    {assignmentObj.score}
+                  </p>
+                  <p>{determineGradeLetter(assignmentObj.score)}</p>
                 </div>
               </div>
             ))}

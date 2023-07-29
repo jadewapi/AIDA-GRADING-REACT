@@ -349,6 +349,7 @@ svg {
   display: grid;
   grid-template-columns: 1fr 3fr 1fr;
   grid-template-rows: 10rem;
+  transition: all 0.5s ease;
 }
 
 .specificAssignment:not(:first-child) {
@@ -379,8 +380,9 @@ svg {
 }
 
 .assignmentGrade > p {
-  background-color: #3d6c48;
+  background-color: #ddbb00;
   color: white;
+  transition: all 0.5s ease;
 }
 
 .assignmentGrade > p:nth-child(2) {
@@ -567,11 +569,11 @@ svg {
   border-bottom: 5px solid black;
 }
 
-/* end assignment info */
-
-.interfaceButon:hover {
-  border: 4px solid black;
+.scoreInput::placeholder {
+  color: rgba(0, 0, 0, 0.68);
 }
+
+/* end assignment info */
 
 .assignmentsButton:hover {
   border: 4px solid black;
@@ -598,5 +600,5 @@ svg {
 }
 
 .specificAssignment:hover {
-  border-left: 6px solid black;
+  border-left: 10px solid black;
 }
