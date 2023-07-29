@@ -205,7 +205,7 @@ svg {
   color: white;
   margin: 0 auto;
   text-shadow: -3px 0px 11px rgba(0, 0, 0, 0.215);
-  transition: all 0.5s ease;
+  transition: all 0.5s ease-in;
 }
 
 .specificStudentContainer {
@@ -262,6 +262,7 @@ svg {
   border-radius: 20px;
   margin: 0 2rem;
   overflow: auto;
+  transition: all 0.5s ease-in;
 }
 
 .interfaceDisplay {
@@ -361,7 +362,7 @@ svg {
   display: grid;
   grid-template-columns: 1fr 3fr 1fr;
   grid-template-rows: 10rem;
-  transition: all 0.5s ease;
+  transition: all 0.25s ease-in;
 }
 
 .specificAssignment:not(:first-child) {
@@ -395,7 +396,7 @@ svg {
 .assignmentGrade > p {
   background-color: #ddbb00;
   color: white;
-  transition: all 0.5s ease;
+  transition: all 0.5s ease-in;
   box-shadow: -7px 3px 12px rgba(0, 0, 0, 0.6);
 }
 
@@ -434,7 +435,7 @@ svg {
 
 .assignmentDisplay {
   height: 100%;
-  background-color: #3d6c48;
+  background-color: #008001;
 }
 
 .navigation {
@@ -557,7 +558,7 @@ svg {
 
 .studentNameAssignment {
   display: flex;
-  transition: all 0.5s ease;
+  transition: all 0.5s ease-in;
 }
 
 .studentNameAssignment:not(:last-child) {
@@ -593,7 +594,7 @@ svg {
 
 /* end assignment info */
 
-.interfaceButon:hover {
+.interfaceButton:hover {
   border: 4px solid black;
 }
 
@@ -623,4 +624,9 @@ svg {
 
 .specificAssignment:hover {
   border-left: 10px solid black;
+}
+
+#root > div > p,
+#root > div > button {
+  transition: all 0.25s ease-in;
 }

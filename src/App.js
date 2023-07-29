@@ -228,52 +228,6 @@ function App() {
 
     return style;
   }
-  const [showedContent, setShowedContent] = useState("");
-  return (
-    <>
-      {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
-      <Navbar
-        data={data}
-        setCurrentTeacher={setCurrentTeacher}
-        setLoggedIn={setLoggedIn}
-      />
-      {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
-      <AllStudents
-        currentTeacher={currentTeacher}
-        setCurrentStudent={setCurrentStudent}
-        currentStudent={currentStudent}
-        determineGradeColor={determineGradeColor}
-      />
-      {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
-      <DisplayInterface
-        currentStudent={currentStudent}
-        loggedIn={loggedIn}
-        handleCurrentAssignment={handleCurrentAssignment}
-        currentAssignment={currentAssignment}
-        determineGradeColor={determineGradeColor}
-        showedContent={showedContent}
-      />
-      {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
-      <AssignmentInfo
-        currentAssignment={currentAssignment}
-        currentTeacher={currentTeacher}
-        handleScoreChange={handleScoreChange}
-        currentStudent={currentStudent}
-      />
-      {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
-      <Buttons setShowedContent={setShowedContent} />
-    </>
-  );
-}
-export default App;
-
-function DisplayInterface({
-  loggedIn,
-  currentStudent,
-  handleCurrentAssignment,
-  currentAssignment,
-  determineGradeColor,
-}) {
   function determineGradeLetter(assignmentScore) {
     const gradeLetter =
       assignmentScore >= 95
@@ -291,71 +245,124 @@ function DisplayInterface({
         : "Fail";
     return gradeLetter;
   }
-
+  const [showedContent, setShowedContent] = useState("interfaceButton");
   return (
-    <section class="displayInterface">
-      {loggedIn && currentStudent && (
-        <div class="interfaceDisplay">
-          <div class="studentID">
-            <p>student id:</p>
-            <p>{currentStudent.studentId}</p>
-          </div>
-          <div class="name">
-            <p>{currentStudent.firstName}</p>
-            <p>{currentStudent.lastName}</p>
-          </div>
-          <div class="studentAverage">
-            <p>student avg:</p>
-            <p>{currentStudent.average}</p>
-          </div>
-          <div class="entry">
-            <p>Entry</p>
-          </div>
-          <div class="assignment">
-            <p>Assignment</p>
-          </div>
-          <div class="grade">
-            <p>Grade</p>
-          </div>
-          <div class="assignmentContainer">
-            {currentStudent.studentAssignment.map((assignmentObj, index) => (
-              <div
-                class="specificAssignment"
-                key={assignmentObj.assignmentName}
-                onClick={() =>
-                  handleCurrentAssignment(assignmentObj.assignmentName)
-                }
-                style={
-                  assignmentObj.assignmentName === currentAssignment
-                    ? { backgroundColor: "#a33600" }
-                    : {}
-                }
-              >
-                <div class="entryNumber">
-                  <p>{index + 1}</p>
-                </div>
-                <div class="specificAssignmentInfo">
-                  <div>
-                    <p>{assignmentObj.assignmentName}</p>
-                  </div>
-                  <p>{assignmentObj.assignmentDescription}</p>
-                </div>
-                <div class="assignmentGrade">
-                  <p style={determineGradeColor(assignmentObj.score)}>
-                    {assignmentObj.score}
-                  </p>
-                  <p>{determineGradeLetter(assignmentObj.score)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </section>
+    <>
+      {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
+      <Navbar
+        data={data}
+        setCurrentTeacher={setCurrentTeacher}
+        setLoggedIn={setLoggedIn}
+      />
+      {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
+      <AllStudents
+        currentTeacher={currentTeacher}
+        setCurrentStudent={setCurrentStudent}
+        currentStudent={currentStudent}
+        determineGradeColor={determineGradeColor}
+      />
+      {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
+      <DisplayInterface>
+        {!loggedIn && <p>Please login</p>}
+        {loggedIn && currentStudent && showedContent === "interfaceButton" && (
+          <StudentViewMenu
+            currentStudent={currentStudent}
+            handleCurrentAssignment={handleCurrentAssignment}
+            currentAssignment={currentAssignment}
+            determineGradeColor={determineGradeColor}
+            determineGradeLetter={determineGradeLetter}
+          />
+        )}
+        {loggedIn &&
+          currentStudent &&
+          showedContent === "assignmentsButton" && <AssignmentMenu />}
+      </DisplayInterface>
+      {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
+      <AssignmentInfo
+        currentAssignment={currentAssignment}
+        currentTeacher={currentTeacher}
+        handleScoreChange={handleScoreChange}
+        currentStudent={currentStudent}
+      />
+      {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
+      <Buttons
+        setShowedContent={setShowedContent}
+        showedContent={showedContent}
+      />
+    </>
   );
 }
+export default App;
 
-function StudentViewMenu() {}
+function DisplayInterface({ children }) {
+  return <section class="displayInterface">{children}</section>;
+}
+
+function StudentViewMenu({
+  currentStudent,
+  handleCurrentAssignment,
+  currentAssignment,
+  determineGradeColor,
+  determineGradeLetter,
+}) {
+  return (
+    <div class="interfaceDisplay">
+      <div class="studentID">
+        <p>student id:</p>
+        <p>{currentStudent.studentId}</p>
+      </div>
+      <div class="name">
+        <p>{currentStudent.firstName}</p>
+        <p>{currentStudent.lastName}</p>
+      </div>
+      <div class="studentAverage">
+        <p>student avg:</p>
+        <p>{currentStudent.average}</p>
+      </div>
+      <div class="entry">
+        <p>Entry</p>
+      </div>
+      <div class="assignment">
+        <p>Assignment</p>
+      </div>
+      <div class="grade">
+        <p>Grade</p>
+      </div>
+      <div class="assignmentContainer">
+        {currentStudent.studentAssignment.map((assignmentObj, index) => (
+          <div
+            class="specificAssignment"
+            key={assignmentObj.assignmentName}
+            onClick={() =>
+              handleCurrentAssignment(assignmentObj.assignmentName)
+            }
+            style={
+              assignmentObj.assignmentName === currentAssignment
+                ? { backgroundColor: "#a33600" }
+                : {}
+            }
+          >
+            <div class="entryNumber">
+              <p>{index + 1}</p>
+            </div>
+            <div class="specificAssignmentInfo">
+              <div>
+                <p>{assignmentObj.assignmentName}</p>
+              </div>
+              <p>{assignmentObj.assignmentDescription}</p>
+            </div>
+            <div class="assignmentGrade">
+              <p style={determineGradeColor(assignmentObj.score)}>
+                {assignmentObj.score}
+              </p>
+              <p>{determineGradeLetter(assignmentObj.score)}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function AssignmentMenu() {
   return (
@@ -521,7 +528,7 @@ function Navbar({ data, setCurrentTeacher, setLoggedIn }) {
   );
 }
 
-function Buttons({ setShowedContent }) {
+function Buttons({ setShowedContent, showedContent }) {
   return (
     <>
       <div class="students">
@@ -529,10 +536,15 @@ function Buttons({ setShowedContent }) {
       </div>
       <div class="interface">
         <button
-          class="interfaceButon"
+          class="interfaceButton"
           onClick={(e) => {
             setShowedContent(e.target.className);
           }}
+          style={
+            showedContent === "interfaceButton"
+              ? { backgroundColor: "black", color: "white" }
+              : {}
+          }
         >
           Interface
         </button>
@@ -543,6 +555,11 @@ function Buttons({ setShowedContent }) {
           onClick={(e) => {
             setShowedContent(e.target.className);
           }}
+          style={
+            showedContent === "assignmentsButton"
+              ? { backgroundColor: "black", color: "white" }
+              : {}
+          }
         >
           Assignments
         </button>
