@@ -196,11 +196,37 @@ function App() {
               assignmentToUpdate.score = Number(score);
             }
           }
+          const sumAssignment = studentToUpdate.studentAssignment.reduce(
+            (acc, curr) => {
+              return acc + curr.score;
+            },
+            0
+          );
+          studentToUpdate.average = Math.round(
+            sumAssignment / studentToUpdate.studentAssignment.length
+          );
         }
         return updatedTeacher;
       }
       return prev;
     });
+  }
+  function determineGradeColor(assignmentScore) {
+    let style = { backgroundColor: "black" };
+
+    if (assignmentScore >= 90 && assignmentScore <= 100) {
+      style = { backgroundColor: "green" };
+    }
+
+    if (assignmentScore >= 75 && assignmentScore <= 89) {
+      style = { backgroundColor: "#ddbb00" };
+    }
+
+    if (assignmentScore >= 1 && assignmentScore <= 74) {
+      style = { backgroundColor: "#d10000" };
+    }
+
+    return style;
   }
   return (
     <>
@@ -214,6 +240,8 @@ function App() {
       <AllStudents
         currentTeacher={currentTeacher}
         setCurrentStudent={setCurrentStudent}
+        currentStudent={currentStudent}
+        determineGradeColor={determineGradeColor}
       />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
       <DisplayInterface
@@ -221,12 +249,14 @@ function App() {
         loggedIn={loggedIn}
         handleCurrentAssignment={handleCurrentAssignment}
         currentAssignment={currentAssignment}
+        determineGradeColor={determineGradeColor}
       />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
       <AssignmentInfo
         currentAssignment={currentAssignment}
         currentTeacher={currentTeacher}
         handleScoreChange={handleScoreChange}
+        currentStudent={currentStudent}
       />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
       <Buttons />
@@ -239,6 +269,7 @@ function AssignmentInfo({
   currentTeacher,
   currentAssignment,
   handleScoreChange,
+  currentStudent,
 }) {
   return (
     <section class="assignmentInfo">
@@ -253,7 +284,19 @@ function AssignmentInfo({
           );
           return (
             selectedAssignment && (
-              <div class="studentNameAssignment" key={studentObj.studentId}>
+              <div
+                class="studentNameAssignment"
+                key={studentObj.studentId}
+                style={
+                  currentStudent.studentId === studentObj.studentId
+                    ? {
+                        backgroundColor: "#a33600",
+                        color: "white",
+                        borderLeft: "4px solid white",
+                      }
+                    : {}
+                }
+              >
                 <div class="studentName">
                   <p>{studentObj.firstName}</p>
                   <p>{studentObj.lastName}</p>
@@ -281,6 +324,7 @@ function DisplayInterface({
   currentStudent,
   handleCurrentAssignment,
   currentAssignment,
+  determineGradeColor,
 }) {
   function determineGradeLetter(assignmentScore) {
     const gradeLetter =
@@ -298,23 +342,6 @@ function DisplayInterface({
         ? "C-"
         : "Fail";
     return gradeLetter;
-  }
-  function determineGradeColor(assignmentScore) {
-    let style = { backgroundColor: "black" };
-
-    if (assignmentScore >= 90 && assignmentScore <= 100) {
-      style = { backgroundColor: "green" };
-    }
-
-    if (assignmentScore >= 75 && assignmentScore <= 89) {
-      style = { backgroundColor: "#ddbb00" };
-    }
-
-    if (assignmentScore >= 1 && assignmentScore <= 74) {
-      style = { backgroundColor: "#d10000" };
-    }
-
-    return style;
   }
 
   return (
@@ -350,12 +377,11 @@ function DisplayInterface({
                 onClick={() =>
                   handleCurrentAssignment(assignmentObj.assignmentName)
                 }
-                style={{
-                  backgroundColor:
-                    assignmentObj.assignmentName === currentAssignment
-                      ? "#a33600"
-                      : "",
-                }}
+                style={
+                  assignmentObj.assignmentName === currentAssignment
+                    ? { backgroundColor: "#a33600" }
+                    : {}
+                }
               >
                 <div class="entryNumber">
                   <p>{index + 1}</p>
@@ -381,7 +407,12 @@ function DisplayInterface({
   );
 }
 
-function AllStudents({ currentTeacher, setCurrentStudent }) {
+function AllStudents({
+  currentTeacher,
+  setCurrentStudent,
+  currentStudent,
+  determineGradeColor,
+}) {
   function handleCurrentStudent(studentId) {
     setCurrentStudent((prev) =>
       currentTeacher.allStudents.find(
@@ -397,6 +428,13 @@ function AllStudents({ currentTeacher, setCurrentStudent }) {
             class="specificStudent"
             onClick={() => handleCurrentStudent(studentObj.studentId)}
             key={studentObj.studentId}
+            style={
+              currentStudent
+                ? currentStudent.studentId === studentObj.studentId
+                  ? { border: "2px solid white", filter: "saturate(2)" }
+                  : {}
+                : {}
+            }
           >
             <div class="specificStudentContainer">
               <p class="specificStudentFirstName">{studentObj.firstName}</p>

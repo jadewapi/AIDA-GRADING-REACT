@@ -555,6 +555,7 @@ svg {
 .studentName {
   border-bottom: 4px solid black;
   width: 70%;
+  padding: 0 1rem;
 }
 
 .studentName > p:first-child {
