@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 function App() {
   const [data, setData] = useState([
     {
@@ -223,11 +223,6 @@ function App() {
       return prev;
     });
   }
-  function currentAssignmentClicked(assignmentName) {
-    if (currentAssignment.assignmentName === assignmentName) {
-      return { backgroundColor: "black" };
-    }
-  }
   return (
     <>
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
@@ -246,7 +241,7 @@ function App() {
         currentStudent={currentStudent}
         loggedIn={loggedIn}
         handleCurrentAssignment={handleCurrentAssignment}
-        currentAssignmentClicked={currentAssignmentClicked}
+        currentAssignment={currentAssignment}
       />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
       <AssignmentInfo
@@ -306,7 +301,7 @@ function DisplayInterface({
   loggedIn,
   currentStudent,
   handleCurrentAssignment,
-  currentAssignmentClicked,
+  currentAssignment,
 }) {
   function determineGradeLetter(assignmentScore) {
     const gradeLetter =
@@ -342,6 +337,7 @@ function DisplayInterface({
 
     return style;
   }
+
   return (
     <section class="displayInterface">
       {loggedIn && currentStudent && (
@@ -370,7 +366,6 @@ function DisplayInterface({
           <div class="assignmentContainer">
             {currentStudent.studentAssignment.map((assignmentObj, index) => (
               <div
-                style={currentAssignmentClicked(assignmentObj.assignmentName)}
                 class="specificAssignment"
                 key={assignmentObj.assignmentName}
                 onClick={() =>
