@@ -557,6 +557,7 @@ svg {
 
 .studentNameAssignment {
   display: flex;
+  transition: all 0.5s ease;
 }
 
 .studentNameAssignment:not(:last-child) {
