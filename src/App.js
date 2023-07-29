@@ -228,6 +228,7 @@ function App() {
 
     return style;
   }
+  const [showedContent, setShowedContent] = useState("");
   return (
     <>
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
@@ -250,6 +251,7 @@ function App() {
         handleCurrentAssignment={handleCurrentAssignment}
         currentAssignment={currentAssignment}
         determineGradeColor={determineGradeColor}
+        showedContent={showedContent}
       />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
       <AssignmentInfo
@@ -259,65 +261,11 @@ function App() {
         currentStudent={currentStudent}
       />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
-      <Buttons />
+      <Buttons setShowedContent={setShowedContent} />
     </>
   );
 }
 export default App;
-
-function AssignmentInfo({
-  currentTeacher,
-  currentAssignment,
-  handleScoreChange,
-  currentStudent,
-}) {
-  return (
-    <section class="assignmentInfo">
-      <div class="specificAssignmentMenu">
-        <p>{currentAssignment}</p>
-      </div>
-      <div class="listOfStudents">
-        {currentTeacher?.allStudents.map((studentObj) => {
-          const selectedAssignment = studentObj.studentAssignment.find(
-            (assignmentObj) =>
-              assignmentObj.assignmentName === currentAssignment
-          );
-          return (
-            selectedAssignment && (
-              <div
-                class="studentNameAssignment"
-                key={studentObj.studentId}
-                style={
-                  currentStudent.studentId === studentObj.studentId
-                    ? {
-                        backgroundColor: "#a33600",
-                        color: "white",
-                        borderLeft: "4px solid white",
-                      }
-                    : {}
-                }
-              >
-                <div class="studentName">
-                  <p>{studentObj.firstName}</p>
-                  <p>{studentObj.lastName}</p>
-                </div>
-                <input
-                  key={`${studentObj.studentId}-${currentAssignment}`}
-                  type="text"
-                  placeholder={selectedAssignment.score}
-                  onChange={(e) =>
-                    handleScoreChange(studentObj.studentId, e.target.value)
-                  }
-                  className="scoreInput"
-                />
-              </div>
-            )
-          );
-        })}
-      </div>
-    </section>
-  );
-}
 
 function DisplayInterface({
   loggedIn,
@@ -403,6 +351,81 @@ function DisplayInterface({
           </div>
         </div>
       )}
+    </section>
+  );
+}
+
+function StudentViewMenu() {}
+
+function AssignmentMenu() {
+  return (
+    <div class="assignmentDisplay">
+      <div class="navigation">
+        <button>Add assignment</button>
+        <button>Delete assignment</button>
+      </div>
+      <div class="addAssignments">
+        <textarea placeholder="enter assignment name..."></textarea>
+        <textarea placeholder="enter assignment description..."></textarea>
+        <div class="buttonContainer">
+          <button>Reset</button>
+          <button>Update</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AssignmentInfo({
+  currentTeacher,
+  currentAssignment,
+  handleScoreChange,
+  currentStudent,
+}) {
+  return (
+    <section class="assignmentInfo">
+      <div class="specificAssignmentMenu">
+        <p>{currentAssignment}</p>
+      </div>
+      <div class="listOfStudents">
+        {currentTeacher?.allStudents.map((studentObj) => {
+          const selectedAssignment = studentObj.studentAssignment.find(
+            (assignmentObj) =>
+              assignmentObj.assignmentName === currentAssignment
+          );
+          return (
+            selectedAssignment && (
+              <div
+                class="studentNameAssignment"
+                key={studentObj.studentId}
+                style={
+                  currentStudent.studentId === studentObj.studentId
+                    ? {
+                        backgroundColor: "#a33600",
+                        color: "white",
+                        borderLeft: "4px solid white",
+                      }
+                    : {}
+                }
+              >
+                <div class="studentName">
+                  <p>{studentObj.firstName}</p>
+                  <p>{studentObj.lastName}</p>
+                </div>
+                <input
+                  key={`${studentObj.studentId}-${currentAssignment}`}
+                  type="text"
+                  placeholder={selectedAssignment.score}
+                  onChange={(e) =>
+                    handleScoreChange(studentObj.studentId, e.target.value)
+                  }
+                  className="scoreInput"
+                />
+              </div>
+            )
+          );
+        })}
+      </div>
     </section>
   );
 }
@@ -498,17 +521,31 @@ function Navbar({ data, setCurrentTeacher, setLoggedIn }) {
   );
 }
 
-function Buttons() {
+function Buttons({ setShowedContent }) {
   return (
     <>
       <div class="students">
         <p>Students</p>
       </div>
       <div class="interface">
-        <button class="interfaceButon">Interface</button>
+        <button
+          class="interfaceButon"
+          onClick={(e) => {
+            setShowedContent(e.target.className);
+          }}
+        >
+          Interface
+        </button>
       </div>
       <div class="manageAssignment">
-        <button class="assignmentsButton">Assignments</button>
+        <button
+          class="assignmentsButton"
+          onClick={(e) => {
+            setShowedContent(e.target.className);
+          }}
+        >
+          Assignments
+        </button>
       </div>
       <div class="menu">
         <p>Menu</p>
