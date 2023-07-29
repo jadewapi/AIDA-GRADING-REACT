@@ -193,7 +193,7 @@ function App() {
               assignmentToUpdate.score = 0;
             }
             if (!isNaN(score)) {
-              assignmentToUpdate.score = Number(score);
+              assignmentToUpdate.score = Math.min(Math.abs(Number(score)), 100);
             }
           }
           const sumAssignment = studentToUpdate.studentAssignment.reduce(
@@ -428,13 +428,14 @@ function AllStudents({
             class="specificStudent"
             onClick={() => handleCurrentStudent(studentObj.studentId)}
             key={studentObj.studentId}
-            style={
-              currentStudent
+            style={{
+              ...determineGradeColor(studentObj.average),
+              ...(currentStudent
                 ? currentStudent.studentId === studentObj.studentId
                   ? { border: "2px solid white", filter: "saturate(2)" }
                   : {}
-                : {}
-            }
+                : {}),
+            }}
           >
             <div class="specificStudentContainer">
               <p class="specificStudentFirstName">{studentObj.firstName}</p>
