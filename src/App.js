@@ -5,32 +5,6 @@ function App() {
       teacherName: "Jade Pineda",
       userName: "jp",
       userPin: "1111",
-      assignments: [
-        {
-          assignmentName: "Dichotomous Key",
-          assignmentDescription:
-            "Create a dichotomous key to classify different types of leaves.",
-          assignmentAverage: 89,
-        },
-        {
-          assignmentName: "Solar System Model",
-          assignmentDescription:
-            "Build a scale model of the solar system, including all planets and their relative distances from the Sun.",
-          assignmentAverage: 59,
-        },
-        {
-          assignmentName: "Chemical Reactions",
-          assignmentDescription:
-            "Investigate and document three chemical reactions that produce noticeable changes.",
-          assignmentAverage: 78,
-        },
-        {
-          assignmentName: "Ecosystem Research",
-          assignmentDescription:
-            "Choose an ecosystem and research its components, interactions, and the importance of biodiversity within it.",
-          assignmentAverage: 98,
-        },
-      ],
       allStudents: [
         {
           firstName: "Emma",
@@ -215,7 +189,12 @@ function App() {
               assignmentObj.assignmentName === currentAssignment
           );
           if (assignmentToUpdate) {
-            assignmentToUpdate.score = Number(score);
+            if (isNaN(score)) {
+              assignmentToUpdate.score = 0;
+            }
+            if (!isNaN(score)) {
+              assignmentToUpdate.score = Number(score);
+            }
           }
         }
         return updatedTeacher;
@@ -331,8 +310,8 @@ function DisplayInterface({
       style = { backgroundColor: "#ddbb00" };
     }
 
-    if (assignmentScore >= 60 && assignmentScore <= 74) {
-      style = { backgroundColor: "#7b0000" };
+    if (assignmentScore >= 1 && assignmentScore <= 74) {
+      style = { backgroundColor: "#d10000" };
     }
 
     return style;
@@ -371,6 +350,12 @@ function DisplayInterface({
                 onClick={() =>
                   handleCurrentAssignment(assignmentObj.assignmentName)
                 }
+                style={{
+                  backgroundColor:
+                    assignmentObj.assignmentName === currentAssignment
+                      ? "#a33600"
+                      : "",
+                }}
               >
                 <div class="entryNumber">
                   <p>{index + 1}</p>
