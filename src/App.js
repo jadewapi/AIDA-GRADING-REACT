@@ -263,7 +263,9 @@ function App() {
       />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
       <DisplayInterface>
-        {!loggedIn && <p>Please login</p>}
+        {!loggedIn && (
+          <p className="pleaseLogin">Please login. Username: jp, Pin: 1111</p>
+        )}
         {loggedIn && currentStudent && showedContent === "interfaceButton" && (
           <StudentViewMenu
             currentStudent={currentStudent}
@@ -275,7 +277,13 @@ function App() {
         )}
         {loggedIn &&
           currentStudent &&
-          showedContent === "assignmentsButton" && <AssignmentMenu />}
+          showedContent === "assignmentsButton" && (
+            <AssignmentMenu
+              setCurrentTeacher={setCurrentTeacher}
+              currentTeacher={currentTeacher}
+              setData={setData}
+            />
+          )}
       </DisplayInterface>
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
       <AssignmentInfo
@@ -293,6 +301,62 @@ function App() {
   );
 }
 export default App;
+function AssignmentMenu({ setCurrentTeacher, currentTeacher, setData }) {
+  const [assignmentName, setAssignmentName] = useState("");
+  const [assignmentDescription, setAssignmentDescription] = useState("");
+  function handleReset() {
+    setAssignmentName("");
+    setAssignmentDescription("");
+  }
+  function handleAddAssignment() {
+    setData((prev) => {
+      const updatedPrev = [...prev];
+      const teacherToUpdate = updatedPerv.find(
+        (teacherObj) => teacherObj.userPin === currentTeacher.userPin
+      );
+      teacherToUpdate.allStudents.map((studentObj) => {
+        const newAssignment = {
+          assignmentName: assignmentName,
+          assignmentDescription: assignmentDescription,
+          score: 0,
+        };
+        studentObj.studentAssignment = [
+          newAssignment,
+          ...studentObj.studentAssignment,
+        ];
+      });
+    });
+  }
+  return (
+    <div class="assignmentDisplay">
+      <div class="navigation">
+        <button>Add assignment</button>
+        <button>Delete assignment</button>
+      </div>
+      <div class="addAssignments">
+        <textarea
+          placeholder="enter assignment name..."
+          onChange={(e) => setAssignmentName(e.target.value)}
+        ></textarea>
+        <textarea
+          placeholder="enter assignment description..."
+          onChange={(e) => setAssignmentDescription(e.target.value)}
+        ></textarea>
+        <div class="buttonContainer">
+          <button onClick={() => handleReset()}>Reset</button>
+          <button
+            onClick={() => {
+              handleAddAssignment();
+              console.log(currentTeacher);
+            }}
+          >
+            Update
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function DisplayInterface({ children }) {
   return <section class="displayInterface">{children}</section>;
@@ -359,25 +423,6 @@ function StudentViewMenu({
             </div>
           </div>
         ))}
-      </div>
-    </div>
-  );
-}
-
-function AssignmentMenu() {
-  return (
-    <div class="assignmentDisplay">
-      <div class="navigation">
-        <button>Add assignment</button>
-        <button>Delete assignment</button>
-      </div>
-      <div class="addAssignments">
-        <textarea placeholder="enter assignment name..."></textarea>
-        <textarea placeholder="enter assignment description..."></textarea>
-        <div class="buttonContainer">
-          <button>Reset</button>
-          <button>Update</button>
-        </div>
       </div>
     </div>
   );
