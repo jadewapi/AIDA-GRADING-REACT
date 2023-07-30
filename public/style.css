@@ -437,6 +437,7 @@ svg {
 .assignmentDisplay {
   height: 100%;
   background-color: #008001;
+  transition: all 0.5s ease-in;
 }
 
 .navigation {
@@ -505,7 +506,6 @@ svg {
 .deleteAssignmentMenu {
   overflow: auto;
   height: 85%;
-  background-color: rgb(136, 25, 25);
   padding: 0 4rem;
   color: white;
   font-size: 2rem;
@@ -526,7 +526,6 @@ svg {
 .assignmentDelete > button {
   width: 10%;
   background-color: white;
-  color: rgb(136, 25, 25);
   font-size: 4rem;
 }
 

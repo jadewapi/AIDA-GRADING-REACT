@@ -11,7 +11,7 @@ function App() {
         {
           firstName: "Emma",
           lastName: "Thompson",
-          average: 82,
+          average: 90,
           studentId: "111",
           studentAssignment: [
             {
@@ -32,7 +32,7 @@ function App() {
               assignmentName: "Chemical Reactions",
               assignmentDescription:
                 "Investigate and document three chemical reactions that produce noticeable changes.",
-              score: 53,
+              score: 98,
               id: "82963hfsdhj92",
             },
             {
@@ -54,7 +54,7 @@ function App() {
               assignmentName: "Dichotomous Key",
               assignmentDescription:
                 "Create a dichotomous key to classify different types of leaves.",
-              score: 18,
+              score: 88,
               id: "hlsd1212jkhfiuq",
             },
             {
@@ -68,14 +68,14 @@ function App() {
               assignmentName: "Chemical Reactions",
               assignmentDescription:
                 "Investigate and document three chemical reactions that produce noticeable changes.",
-              score: 13,
+              score: 78,
               id: "82963hfsdhj92",
             },
             {
               assignmentName: "Ecosystem Research",
               assignmentDescription:
                 "Choose an ecosystem and research its components, interactions, and the importance of biodiversity within it.",
-              score: 67,
+              score: 80,
               id: "82389712398jhsbdjsf",
             },
           ],
@@ -104,14 +104,14 @@ function App() {
               assignmentName: "Chemical Reactions",
               assignmentDescription:
                 "Investigate and document three chemical reactions that produce noticeable changes.",
-              score: 10,
+              score: 90,
               id: "82963hfsdhj92",
             },
             {
               assignmentName: "Ecosystem Research",
               assignmentDescription:
                 "Choose an ecosystem and research its components, interactions, and the importance of biodiversity within it.",
-              score: 53,
+              score: 63,
               id: "82389712398jhsbdjsf",
             },
           ],
@@ -140,14 +140,14 @@ function App() {
               assignmentName: "Chemical Reactions",
               assignmentDescription:
                 "Investigate and document three chemical reactions that produce noticeable changes.",
-              score: 53,
+              score: 80,
               id: "82963hfsdhj92",
             },
             {
               assignmentName: "Ecosystem Research",
               assignmentDescription:
                 "Choose an ecosystem and research its components, interactions, and the importance of biodiversity within it.",
-              score: 27,
+              score: 77,
               id: "82389712398jhsbdjsf",
             },
           ],
@@ -162,21 +162,21 @@ function App() {
               assignmentName: "Dichotomous Key",
               assignmentDescription:
                 "Create a dichotomous key to classify different types of leaves.",
-              score: 66,
+              score: 89,
               id: "hlsd1212jkhfiuq",
             },
             {
               assignmentName: "Solar System Model",
               assignmentDescription:
                 "Build a scale model of the solar system, including all planets and their relative distances from the Sun.",
-              score: 58,
+              score: 76,
               id: "uh991283hds",
             },
             {
               assignmentName: "Chemical Reactions",
               assignmentDescription:
                 "Investigate and document three chemical reactions that produce noticeable changes.",
-              score: 13,
+              score: 91,
               id: "82963hfsdhj92",
             },
             {
@@ -196,7 +196,9 @@ function App() {
   const [currentStudent, setCurrentStudent] = useState(null);
   const [currentAssignment, setCurrentAssignment] = useState("");
   function handleCurrentAssignment(assignmentId) {
-    setCurrentAssignment(assignmentId);
+    setCurrentAssignment(
+      currentStudent.studentAssignment.find((obj) => obj.id === assignmentId)
+    );
   }
   function handleScoreChange(studentId, score) {
     setCurrentTeacher((prev) => {
@@ -207,8 +209,7 @@ function App() {
         );
         if (studentToUpdate) {
           const assignmentToUpdate = studentToUpdate.studentAssignment.find(
-            (assignmentObj) =>
-              assignmentObj.assignmentName === currentAssignment
+            (assignmentObj) => assignmentObj.id === currentAssignment.id
           );
           if (assignmentToUpdate) {
             if (isNaN(score)) {
@@ -305,6 +306,7 @@ function App() {
               currentTeacher={currentTeacher}
               setData={setData}
               setShowedContent={setShowedContent}
+              handleCurrentAssignment={handleCurrentAssignment}
             />
           )}
       </DisplayInterface>
@@ -314,6 +316,7 @@ function App() {
         currentTeacher={currentTeacher}
         handleScoreChange={handleScoreChange}
         currentStudent={currentStudent}
+        handleCurrentAssignment={handleCurrentAssignment}
       />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
       <Buttons
@@ -324,9 +327,15 @@ function App() {
   );
 }
 export default App;
-function AssignmentMenu({ currentTeacher, setData, setShowedContent }) {
+function AssignmentMenu({
+  currentTeacher,
+  setData,
+  setShowedContent,
+  handleCurrentAssignment,
+}) {
   const [assignmentName, setAssignmentName] = useState("");
   const [assignmentDescription, setAssignmentDescription] = useState("");
+  const [addOrDelete, setAddOrDelete] = useState("add");
   function handleReset() {
     setAssignmentName("");
     setAssignmentDescription("");
@@ -350,36 +359,76 @@ function AssignmentMenu({ currentTeacher, setData, setShowedContent }) {
           ...studentObj.studentAssignment,
         ];
       });
+      handleCurrentAssignment(id);
+      setShowedContent("interfaceButton");
       return updatedPrev;
     });
   }
   return (
-    <div class="assignmentDisplay">
+    <div
+      class="assignmentDisplay"
+      style={
+        addOrDelete === "add"
+          ? { backgroundColor: "green" }
+          : { backgroundColor: "red" }
+      }
+    >
       <div class="navigation">
-        <button>Add assignment</button>
-        <button>Delete assignment</button>
+        <button
+          onClick={() => setAddOrDelete("add")}
+          style={
+            addOrDelete === "add"
+              ? { backgroundColor: "black", color: "white" }
+              : {}
+          }
+        >
+          Add assignment
+        </button>
+        <button
+          onClick={() => setAddOrDelete("delete")}
+          style={
+            addOrDelete === "delete"
+              ? { backgroundColor: "black", color: "white" }
+              : {}
+          }
+        >
+          Delete assignment
+        </button>
       </div>
-      <div class="addAssignments">
-        <textarea
-          placeholder="enter assignment name..."
-          onChange={(e) => setAssignmentName(e.target.value)}
-        ></textarea>
-        <textarea
-          placeholder="enter assignment description..."
-          onChange={(e) => setAssignmentDescription(e.target.value)}
-        ></textarea>
-        <div class="buttonContainer">
-          <button onClick={() => handleReset()}>Reset</button>
-          <button
-            onClick={() => {
-              handleAddAssignment();
-              console.log(currentTeacher);
-            }}
-          >
-            Update
-          </button>
+      {addOrDelete === "add" ? (
+        <div class="addAssignments">
+          <textarea
+            placeholder="enter assignment name..."
+            onChange={(e) => setAssignmentName(e.target.value)}
+            value={assignmentName}
+          ></textarea>
+          <textarea
+            placeholder="enter assignment description..."
+            onChange={(e) => setAssignmentDescription(e.target.value)}
+            value={assignmentDescription}
+          ></textarea>
+          <div class="buttonContainer">
+            <button onClick={() => handleReset()}>Reset</button>
+            <button
+              onClick={() => {
+                handleAddAssignment();
+                console.log(currentTeacher);
+              }}
+            >
+              Update
+            </button>
+          </div>
         </div>
-      </div>
+      ) : addOrDelete === "delete" ? (
+        <div class="deleteAssignmentMenu">
+          <div class="assignmentDelete">
+            <p>kjdhsfksjhdf</p>
+            <button>X</button>
+          </div>
+        </div>
+      ) : (
+        <p>yeyeye</p>
+      )}
     </div>
   );
 }
@@ -425,7 +474,7 @@ function StudentViewMenu({
             key={assignmentObj.assignmentName}
             onClick={() => handleCurrentAssignment(assignmentObj.id)}
             style={
-              assignmentObj.id === currentAssignment
+              assignmentObj.id === currentAssignment.id
                 ? { backgroundColor: "#a33600" }
                 : {}
             }
@@ -461,14 +510,19 @@ function AssignmentInfo({
   return (
     <section class="assignmentInfo">
       <div class="specificAssignmentMenu">
-        {!currentTeacher && <p>Login</p>}
-        {!currentStudent && <p>Select student</p>}
-        {currentStudent && currentStudent && <p></p>}
+        {!currentTeacher && <p>Login: jp, 1111</p>}
+        {currentTeacher && !currentStudent && <p>Select student</p>}
+        {currentTeacher && currentStudent && !currentAssignment && (
+          <p>Select assignment</p>
+        )}
+        {currentStudent && currentStudent && (
+          <p>{currentAssignment.assignmentName}</p>
+        )}
       </div>
       <div class="listOfStudents">
         {currentTeacher?.allStudents.map((studentObj) => {
           const selectedAssignment = studentObj.studentAssignment.find(
-            (assignmentObj) => assignmentObj.id === currentAssignment
+            (assignmentObj) => assignmentObj.id === currentAssignment.id
           );
           return (
             selectedAssignment && (
@@ -490,7 +544,7 @@ function AssignmentInfo({
                   <p>{studentObj.lastName}</p>
                 </div>
                 <input
-                  key={`${studentObj.studentId}-${currentAssignment}`}
+                  key={`${studentObj.studentId}-${currentAssignment.id}`}
                   type="text"
                   placeholder={selectedAssignment.score}
                   onChange={(e) =>
