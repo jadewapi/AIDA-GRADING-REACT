@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { nanoid } from "nanoid";
+
 function App() {
   const [data, setData] = useState([
     {
@@ -17,24 +19,28 @@ function App() {
               assignmentDescription:
                 "Create a dichotomous key to classify different types of leaves.",
               score: 76,
+              id: "hlsd1212jkhfiuq",
             },
             {
               assignmentName: "Solar System Model",
               assignmentDescription:
                 "Build a scale model of the solar system, including all planets and their relative distances from the Sun.",
               score: 78,
+              id: "uh991283hds",
             },
             {
               assignmentName: "Chemical Reactions",
               assignmentDescription:
                 "Investigate and document three chemical reactions that produce noticeable changes.",
               score: 53,
+              id: "82963hfsdhj92",
             },
             {
               assignmentName: "Ecosystem Research",
               assignmentDescription:
                 "Choose an ecosystem and research its components, interactions, and the importance of biodiversity within it.",
               score: 87,
+              id: "82389712398jhsbdjsf",
             },
           ],
         },
@@ -49,24 +55,28 @@ function App() {
               assignmentDescription:
                 "Create a dichotomous key to classify different types of leaves.",
               score: 18,
+              id: "hlsd1212jkhfiuq",
             },
             {
               assignmentName: "Solar System Model",
               assignmentDescription:
                 "Build a scale model of the solar system, including all planets and their relative distances from the Sun.",
               score: 75,
+              id: "uh991283hds",
             },
             {
               assignmentName: "Chemical Reactions",
               assignmentDescription:
                 "Investigate and document three chemical reactions that produce noticeable changes.",
               score: 13,
+              id: "82963hfsdhj92",
             },
             {
               assignmentName: "Ecosystem Research",
               assignmentDescription:
                 "Choose an ecosystem and research its components, interactions, and the importance of biodiversity within it.",
               score: 67,
+              id: "82389712398jhsbdjsf",
             },
           ],
         },
@@ -81,24 +91,28 @@ function App() {
               assignmentDescription:
                 "Create a dichotomous key to classify different types of leaves.",
               score: 91,
+              id: "hlsd1212jkhfiuq",
             },
             {
               assignmentName: "Solar System Model",
               assignmentDescription:
                 "Build a scale model of the solar system, including all planets and their relative distances from the Sun.",
               score: 78,
+              id: "uh991283hds",
             },
             {
               assignmentName: "Chemical Reactions",
               assignmentDescription:
                 "Investigate and document three chemical reactions that produce noticeable changes.",
               score: 10,
+              id: "82963hfsdhj92",
             },
             {
               assignmentName: "Ecosystem Research",
               assignmentDescription:
                 "Choose an ecosystem and research its components, interactions, and the importance of biodiversity within it.",
               score: 53,
+              id: "82389712398jhsbdjsf",
             },
           ],
         },
@@ -113,24 +127,28 @@ function App() {
               assignmentDescription:
                 "Create a dichotomous key to classify different types of leaves.",
               score: 75,
+              id: "hlsd1212jkhfiuq",
             },
             {
               assignmentName: "Solar System Model",
               assignmentDescription:
                 "Build a scale model of the solar system, including all planets and their relative distances from the Sun.",
               score: 98,
+              id: "uh991283hds",
             },
             {
               assignmentName: "Chemical Reactions",
               assignmentDescription:
                 "Investigate and document three chemical reactions that produce noticeable changes.",
               score: 53,
+              id: "82963hfsdhj92",
             },
             {
               assignmentName: "Ecosystem Research",
               assignmentDescription:
                 "Choose an ecosystem and research its components, interactions, and the importance of biodiversity within it.",
               score: 27,
+              id: "82389712398jhsbdjsf",
             },
           ],
         },
@@ -145,24 +163,28 @@ function App() {
               assignmentDescription:
                 "Create a dichotomous key to classify different types of leaves.",
               score: 66,
+              id: "hlsd1212jkhfiuq",
             },
             {
               assignmentName: "Solar System Model",
               assignmentDescription:
                 "Build a scale model of the solar system, including all planets and their relative distances from the Sun.",
               score: 58,
+              id: "uh991283hds",
             },
             {
               assignmentName: "Chemical Reactions",
               assignmentDescription:
                 "Investigate and document three chemical reactions that produce noticeable changes.",
               score: 13,
+              id: "82963hfsdhj92",
             },
             {
               assignmentName: "Ecosystem Research",
               assignmentDescription:
                 "Choose an ecosystem and research its components, interactions, and the importance of biodiversity within it.",
               score: 97,
+              id: "82389712398jhsbdjsf",
             },
           ],
         },
@@ -173,8 +195,8 @@ function App() {
   const [currentTeacher, setCurrentTeacher] = useState(null);
   const [currentStudent, setCurrentStudent] = useState(null);
   const [currentAssignment, setCurrentAssignment] = useState("");
-  function handleCurrentAssignment(assignmentName) {
-    setCurrentAssignment(assignmentName);
+  function handleCurrentAssignment(assignmentId) {
+    setCurrentAssignment(assignmentId);
   }
   function handleScoreChange(studentId, score) {
     setCurrentTeacher((prev) => {
@@ -315,11 +337,13 @@ function AssignmentMenu({ currentTeacher, setData, setShowedContent }) {
       const teacherToUpdate = updatedPrev.find(
         (teacherObj) => teacherObj.userPin === currentTeacher.userPin
       );
+      const id = nanoid();
       teacherToUpdate.allStudents.forEach((studentObj) => {
         const newAssignment = {
           assignmentName: assignmentName,
           assignmentDescription: assignmentDescription,
           score: 0,
+          id: id,
         };
         studentObj.studentAssignment = [
           newAssignment,
@@ -399,11 +423,9 @@ function StudentViewMenu({
           <div
             class="specificAssignment"
             key={assignmentObj.assignmentName}
-            onClick={() =>
-              handleCurrentAssignment(assignmentObj.assignmentName)
-            }
+            onClick={() => handleCurrentAssignment(assignmentObj.id)}
             style={
-              assignmentObj.assignmentName === currentAssignment
+              assignmentObj.id === currentAssignment
                 ? { backgroundColor: "#a33600" }
                 : {}
             }
@@ -439,13 +461,14 @@ function AssignmentInfo({
   return (
     <section class="assignmentInfo">
       <div class="specificAssignmentMenu">
-        <p>{currentAssignment}</p>
+        {!currentTeacher && <p>Login</p>}
+        {!currentStudent && <p>Select student</p>}
+        {currentStudent && currentStudent && <p></p>}
       </div>
       <div class="listOfStudents">
         {currentTeacher?.allStudents.map((studentObj) => {
           const selectedAssignment = studentObj.studentAssignment.find(
-            (assignmentObj) =>
-              assignmentObj.assignmentName === currentAssignment
+            (assignmentObj) => assignmentObj.id === currentAssignment
           );
           return (
             selectedAssignment && (
