@@ -282,6 +282,7 @@ function App() {
               setCurrentTeacher={setCurrentTeacher}
               currentTeacher={currentTeacher}
               setData={setData}
+              setShowedContent={setShowedContent}
             />
           )}
       </DisplayInterface>
@@ -301,7 +302,7 @@ function App() {
   );
 }
 export default App;
-function AssignmentMenu({ setCurrentTeacher, currentTeacher, setData }) {
+function AssignmentMenu({ currentTeacher, setData, setShowedContent }) {
   const [assignmentName, setAssignmentName] = useState("");
   const [assignmentDescription, setAssignmentDescription] = useState("");
   function handleReset() {
@@ -311,10 +312,10 @@ function AssignmentMenu({ setCurrentTeacher, currentTeacher, setData }) {
   function handleAddAssignment() {
     setData((prev) => {
       const updatedPrev = [...prev];
-      const teacherToUpdate = updatedPerv.find(
+      const teacherToUpdate = updatedPrev.find(
         (teacherObj) => teacherObj.userPin === currentTeacher.userPin
       );
-      teacherToUpdate.allStudents.map((studentObj) => {
+      teacherToUpdate.allStudents.forEach((studentObj) => {
         const newAssignment = {
           assignmentName: assignmentName,
           assignmentDescription: assignmentDescription,
@@ -325,6 +326,7 @@ function AssignmentMenu({ setCurrentTeacher, currentTeacher, setData }) {
           ...studentObj.studentAssignment,
         ];
       });
+      return updatedPrev;
     });
   }
   return (

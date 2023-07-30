@@ -205,7 +205,7 @@ svg {
   color: white;
   margin: 0 auto;
   text-shadow: -3px 0px 11px rgba(0, 0, 0, 0.215);
-  transition: all 0.5s ease-in;
+  transition: background-color 0.5s ease-in, filter 0s ease-in;
 }
 
 .specificStudentContainer {
@@ -272,6 +272,7 @@ svg {
   grid-template-rows: 2fr 1fr 7fr;
   padding: 1rem;
   row-gap: 1rem;
+  transition: all 1s ease-in-out;
 }
 
 .studentID {
