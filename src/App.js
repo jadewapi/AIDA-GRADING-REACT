@@ -445,14 +445,14 @@ function AssignmentMenu({
   }
   return (
     <div
-      class="assignmentDisplay"
+      className="assignmentDisplay"
       style={
         addOrDelete === "add"
           ? { backgroundColor: "green" }
           : { backgroundColor: "red" }
       }
     >
-      <div class="navigation">
+      <div className="navigation">
         <button
           onClick={() => setAddOrDelete("add")}
           style={
@@ -475,7 +475,7 @@ function AssignmentMenu({
         </button>
       </div>
       {addOrDelete === "add" ? (
-        <div class="addAssignments">
+        <div className="addAssignments">
           <textarea
             placeholder="enter assignment name..."
             onChange={(e) => setAssignmentName(e.target.value)}
@@ -486,7 +486,7 @@ function AssignmentMenu({
             onChange={(e) => setAssignmentDescription(e.target.value)}
             value={assignmentDescription}
           ></textarea>
-          <div class="buttonContainer">
+          <div className="buttonContainer">
             <button onClick={() => handleReset()}>Reset</button>
             <button
               onClick={() => {
@@ -498,9 +498,9 @@ function AssignmentMenu({
           </div>
         </div>
       ) : addOrDelete === "delete" ? (
-        <div class="deleteAssignmentMenu">
+        <div className="deleteAssignmentMenu">
           {currentStudent.studentAssignment.map((assignmentObj) => (
-            <div class="assignmentDelete">
+            <div className="assignmentDelete">
               <p key={assignmentObj.id}>{assignmentObj.assignmentName}</p>
               <button onClick={() => handleDeleteAssignment(assignmentObj.id)}>
                 X
@@ -516,7 +516,7 @@ function AssignmentMenu({
 }
 
 function DisplayInterface({ children }) {
-  return <section class="displayInterface">{children}</section>;
+  return <section className="displayInterface">{children}</section>;
 }
 
 function StudentViewMenu({
@@ -527,32 +527,32 @@ function StudentViewMenu({
   determineGradeLetter,
 }) {
   return (
-    <div class="interfaceDisplay">
-      <div class="studentID">
+    <div className="interfaceDisplay">
+      <div className="studentID">
         <p>student id:</p>
         <p>{currentStudent.studentId}</p>
       </div>
-      <div class="name">
+      <div className="name">
         <p>{currentStudent.firstName}</p>
         <p>{currentStudent.lastName}</p>
       </div>
-      <div class="studentAverage">
+      <div className="studentAverage">
         <p>student avg:</p>
         <p>{currentStudent.average}</p>
       </div>
-      <div class="entry">
+      <div className="entry">
         <p>Entry</p>
       </div>
-      <div class="assignment">
+      <div className="assignment">
         <p>Assignment</p>
       </div>
-      <div class="grade">
+      <div className="grade">
         <p>Grade</p>
       </div>
-      <div class="assignmentContainer">
+      <div className="assignmentContainer">
         {currentStudent.studentAssignment.map((assignmentObj, index) => (
           <div
-            class="specificAssignment"
+            className="specificAssignment"
             key={assignmentObj.assignmentName}
             onClick={() => handleCurrentAssignment(assignmentObj.id)}
             style={
@@ -561,16 +561,16 @@ function StudentViewMenu({
                 : {}
             }
           >
-            <div class="entryNumber">
+            <div className="entryNumber">
               <p>{index + 1}</p>
             </div>
-            <div class="specificAssignmentInfo">
+            <div className="specificAssignmentInfo">
               <div>
                 <p>{assignmentObj.assignmentName}</p>
               </div>
               <p>{assignmentObj.assignmentDescription}</p>
             </div>
-            <div class="assignmentGrade">
+            <div className="assignmentGrade">
               <p style={determineGradeColor(assignmentObj.score)}>
                 {assignmentObj.score}
               </p>
@@ -590,8 +590,8 @@ function AssignmentInfo({
   currentStudent,
 }) {
   return (
-    <section class="assignmentInfo">
-      <div class="specificAssignmentMenu">
+    <section className="assignmentInfo">
+      <div className="specificAssignmentMenu">
         {!currentTeacher && <p>Login: jp, 1111</p>}
         {currentTeacher && !currentStudent && <p>Select student</p>}
         {currentTeacher && currentStudent && !currentAssignment && (
@@ -601,7 +601,7 @@ function AssignmentInfo({
           <p>{currentAssignment?.assignmentName}</p>
         )}
       </div>
-      <div class="listOfStudents">
+      <div className="listOfStudents">
         {currentTeacher?.allStudents.map((studentObj) => {
           const selectedAssignment = studentObj.studentAssignment.find(
             (assignmentObj) => assignmentObj.id === currentAssignment?.id
@@ -609,7 +609,7 @@ function AssignmentInfo({
           return (
             selectedAssignment && (
               <div
-                class="studentNameAssignment"
+                className="studentNameAssignment"
                 key={studentObj.studentId}
                 style={
                   currentStudent.studentId === studentObj.studentId
@@ -621,7 +621,7 @@ function AssignmentInfo({
                     : {}
                 }
               >
-                <div class="studentName">
+                <div className="studentName">
                   <p>{studentObj.firstName}</p>
                   <p>{studentObj.lastName}</p>
                 </div>
@@ -658,11 +658,11 @@ function AllStudents({
     );
   }
   return (
-    <section class="allStudents">
+    <section className="allStudents">
       {currentTeacher &&
         currentTeacher.allStudents.map((studentObj) => (
           <div
-            class="specificStudent"
+            className="specificStudent"
             onClick={() => handleCurrentStudent(studentObj.studentId)}
             key={studentObj.studentId}
             style={{
@@ -672,12 +672,20 @@ function AllStudents({
                   ? { border: "2px solid white", filter: "saturate(2)" }
                   : {}
                 : {}),
+              ...(isNaN(studentObj.average)
+                ? { backgroundColor: "rgb(0, 58, 134)" }
+                : {}),
             }}
           >
-            <div class="specificStudentContainer">
-              <p class="specificStudentFirstName">{studentObj.firstName}</p>
-              <p class="specificStudentLastName">{studentObj.lastName}</p>
-              <p class="specificStudentScore">{studentObj.average}</p>
+            <div className="specificStudentContainer">
+              <p className="specificStudentFirstName">{studentObj.firstName}</p>
+              <p className="specificStudentLastName">{studentObj.lastName}</p>
+              <p
+                className="specificStudentScore"
+                style={isNaN(studentObj.average) ? { color: "#c0c0c078" } : {}}
+              >
+                {isNaN(studentObj.average) ? "???" : studentObj.average}
+              </p>
             </div>
           </div>
         ))}
@@ -701,27 +709,27 @@ function Navbar({ data, setCurrentTeacher, setLoggedIn }) {
   }
 
   return (
-    <nav class="topMenu">
-      <div class="logoContainer">
+    <nav className="topMenu">
+      <div className="logoContainer">
         <img src="aida.png" alt="logo" />
         <p>AIDA</p>
       </div>
-      <form class="login" onSubmit={(e) => handleSubmitTeacherLogin(e)}>
+      <form className="login" onSubmit={(e) => handleSubmitTeacherLogin(e)}>
         <input
           type="text"
-          class="userName"
+          className="userName"
           placeholder="user name"
           onChange={(e) => setUserName(e.target.value)}
           value={userName}
         />
         <input
           type="text"
-          class="userPin"
+          className="userPin"
           placeholder="pin"
           onChange={(e) => setUserPin(e.target.value)}
           value={userPin}
         />
-        <button class="loginButton">
+        <button className="loginButton">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="3rem"
@@ -738,12 +746,12 @@ function Navbar({ data, setCurrentTeacher, setLoggedIn }) {
 function Buttons({ setShowedContent, showedContent }) {
   return (
     <>
-      <div class="students">
+      <div className="students">
         <p>Students</p>
       </div>
-      <div class="interface">
+      <div className="interface">
         <button
-          class="interfaceButton"
+          className="interfaceButton"
           onClick={(e) => {
             setShowedContent(e.target.className);
           }}
@@ -756,9 +764,9 @@ function Buttons({ setShowedContent, showedContent }) {
           Interface
         </button>
       </div>
-      <div class="manageAssignment">
+      <div className="manageAssignment">
         <button
-          class="assignmentsButton"
+          className="assignmentsButton"
           onClick={(e) => {
             setShowedContent(e.target.className);
           }}
@@ -771,7 +779,7 @@ function Buttons({ setShowedContent, showedContent }) {
           Assignments
         </button>
       </div>
-      <div class="menu">
+      <div className="menu">
         <p>Menu</p>
       </div>
     </>
