@@ -283,6 +283,7 @@ function App() {
         setCurrentStudent={setCurrentStudent}
         currentStudent={currentStudent}
         determineGradeColor={determineGradeColor}
+        setCurrentTeacher={setCurrentTeacher}
       />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
       <DisplayInterface>
@@ -302,11 +303,11 @@ function App() {
           currentStudent &&
           showedContent === "assignmentsButton" && (
             <AssignmentMenu
-              setCurrentTeacher={setCurrentTeacher}
               currentTeacher={currentTeacher}
               setData={setData}
               setShowedContent={setShowedContent}
               handleCurrentAssignment={handleCurrentAssignment}
+              currentStudent={currentStudent}
             />
           )}
       </DisplayInterface>
@@ -332,6 +333,7 @@ function AssignmentMenu({
   setData,
   setShowedContent,
   handleCurrentAssignment,
+  currentStudent,
 }) {
   const [assignmentName, setAssignmentName] = useState("");
   const [assignmentDescription, setAssignmentDescription] = useState("");
@@ -344,7 +346,9 @@ function AssignmentMenu({
     setData((prev) => {
       const updatedPrev = [...prev];
       const teacherToUpdate = updatedPrev.find(
-        (teacherObj) => teacherObj.userPin === currentTeacher.userPin
+        (teacherObj) =>
+          teacherObj.userPin === currentTeacher.userPin &&
+          teacherObj.userName === currentTeacher.userName
       );
       const id = nanoid();
       teacherToUpdate.allStudents.forEach((studentObj) => {
@@ -362,6 +366,22 @@ function AssignmentMenu({
       handleCurrentAssignment(id);
       setShowedContent("interfaceButton");
       return updatedPrev;
+    });
+  }
+  function handleDeleteAssignment(assignmentId) {
+    setData((prev) => {
+      const updatedData = [...prev];
+      const teacherToUpdate = updatedData.find(
+        (teacherObj) =>
+          teacherObj.userPin === currentTeacher.userPin &&
+          teacherObj.userName === currentTeacher.userName
+      );
+      teacherToUpdate.allStudents.forEach((studentObj) => {
+        studentObj.studentAssignment = studentObj.studentAssignment.filter(
+          (assignmentObj) => assignmentObj.id !== assignmentId
+        );
+      });
+      return updatedData;
     });
   }
   return (
@@ -421,13 +441,17 @@ function AssignmentMenu({
         </div>
       ) : addOrDelete === "delete" ? (
         <div class="deleteAssignmentMenu">
-          <div class="assignmentDelete">
-            <p>kjdhsfksjhdf</p>
-            <button>X</button>
-          </div>
+          {currentStudent.studentAssignment.map((assignmentObj) => (
+            <div class="assignmentDelete">
+              <p>{assignmentObj.assignmentName}</p>
+              <button onClick={() => handleDeleteAssignment(assignmentObj.id)}>
+                X
+              </button>
+            </div>
+          ))}
         </div>
       ) : (
-        <p>yeyeye</p>
+        <p>jade</p>
       )}
     </div>
   );
@@ -566,6 +590,7 @@ function AllStudents({
   setCurrentStudent,
   currentStudent,
   determineGradeColor,
+  setCurrentTeacher,
 }) {
   function handleCurrentStudent(studentId) {
     setCurrentStudent((prev) =>

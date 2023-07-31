@@ -437,7 +437,7 @@ svg {
 .assignmentDisplay {
   height: 100%;
   background-color: #008001;
-  transition: all 0.5s ease-in;
+  transition: all 1s ease;
 }
 
 .navigation {
@@ -515,8 +515,9 @@ svg {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 0;
+  padding: 1rem 3rem;
   border-bottom: 2px solid white;
+  transition: background-color 0.1s ease-in, border-left 0.5s ease-in;
 }
 
 .assignmentDelete > p {
@@ -653,4 +654,18 @@ svg {
   padding: 4rem;
   font-size: 2rem;
   color: white;
+}
+
+.assignmentDelete:hover {
+  background-color: black;
+  border-left: 10px solid white;
+}
+
+.assignmentDelete > button:hover {
+  color: red;
+}
+
+.assignmentDelete > button:active {
+  background-color: red;
+  color: black;
 }
