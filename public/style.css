@@ -642,7 +642,7 @@ svg {
 }
 
 .specificAssignment:hover {
-  border-left: 10px solid black;
+  border-left: 10px solid rgb(0, 0, 0);
 }
 
 #root > div > p,

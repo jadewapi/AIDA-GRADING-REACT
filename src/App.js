@@ -221,7 +221,7 @@ function App() {
         );
         if (studentToUpdate) {
           const assignmentToUpdate = studentToUpdate.studentAssignment.find(
-            (assignmentObj) => assignmentObj.id === currentAssignment.id
+            (assignmentObj) => assignmentObj.id === currentAssignment?.id
           );
           if (assignmentToUpdate) {
             if (isNaN(score)) {
@@ -253,11 +253,11 @@ function App() {
       style = { backgroundColor: "green" };
     }
 
-    if (assignmentScore >= 75 && assignmentScore <= 89) {
+    if (assignmentScore >= 70 && assignmentScore <= 89) {
       style = { backgroundColor: "#ddbb00" };
     }
 
-    if (assignmentScore >= 1 && assignmentScore <= 74) {
+    if (assignmentScore >= 1 && assignmentScore <= 69) {
       style = { backgroundColor: "#d10000" };
     }
 
@@ -321,6 +321,8 @@ function App() {
               setShowedContent={setShowedContent}
               handleCurrentAssignment={handleCurrentAssignment}
               currentStudent={currentStudent}
+              setCurrentAssignment={setCurrentAssignment}
+              currentAssignment={currentAssignment}
             />
           )}
       </DisplayInterface>
@@ -331,6 +333,7 @@ function App() {
         handleScoreChange={handleScoreChange}
         currentStudent={currentStudent}
         handleCurrentAssignment={handleCurrentAssignment}
+        setCurrentAssignment={setCurrentAssignment}
       />
       {/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/}
       <Buttons
@@ -348,6 +351,8 @@ function AssignmentMenu({
   setShowedContent,
   handleCurrentAssignment,
   currentStudent,
+  setCurrentAssignment,
+  currentAssignment,
 }) {
   const [assignmentName, setAssignmentName] = useState("");
   const [assignmentDescription, setAssignmentDescription] = useState("");
@@ -357,41 +362,85 @@ function AssignmentMenu({
     setAssignmentDescription("");
   }
   function handleAddAssignment() {
-    setData((prev) => {
-      const updatedPrev = [...prev];
-      const teacherToUpdate = updatedPrev.find(
-        (teacherObj) =>
-          teacherObj.userPin === currentTeacher.userPin &&
-          teacherObj.userName === currentTeacher.userName
-      );
+    // setData((prev) => {
+    //   const updatedPrev = [...prev];
+    //   const teacherToUpdate = updatedPrev.find(
+    //     (teacherObj) =>
+    //       teacherObj.userPin === currentTeacher.userPin &&
+    //       teacherObj.userName === currentTeacher.userName
+    //   );
+    //   const id = nanoid();
+    //   teacherToUpdate.allStudents.forEach((studentObj) => {
+    //     const newAssignment = {
+    //       assignmentName: assignmentName,
+    //       assignmentDescription: assignmentDescription,
+    //       score: "?",
+    //       id: id,
+    //     };
+    //     studentObj.studentAssignment = [
+    //       newAssignment,
+    //       ...studentObj.studentAssignment,
+    //     ];
+    //   });
+    //   setShowedContent("interfaceButton");
+    //   return updatedPrev;
+    // });
+    setCurrentTeacher((prev) => {
+      const modifiedTeacherState = { ...prev };
       const id = nanoid();
-      teacherToUpdate.allStudents.forEach((studentObj) => {
+      let currentAssignmentId;
+      modifiedTeacherState.allStudents.forEach((studentObj) => {
         const newAssignment = {
           assignmentName: assignmentName,
           assignmentDescription: assignmentDescription,
           score: 0,
           id: id,
         };
+        currentAssignmentId = id;
         studentObj.studentAssignment = [
           newAssignment,
           ...studentObj.studentAssignment,
         ];
       });
-      const processedData = updatedPrev.map((teacher) => {
-        teacher.allStudents = teacher.allStudents.map((student) => {
-          const totalScore = student.studentAssignment.reduce(
-            (sum, assignment) => sum + assignment.score,
-            0
-          );
-          const average = Math.round(
-            totalScore / student.studentAssignment.length
-          );
-          return { ...student, average };
-        });
-        return teacher;
+      modifiedTeacherState.allStudents.forEach((studentObj) => {
+        const sum = studentObj.studentAssignment.reduce((acc, curr) => {
+          return acc + curr.score;
+        }, 0);
+        studentObj.average = Math.round(
+          sum / studentObj.studentAssignment.length
+        );
       });
+      const newAssignment = modifiedTeacherState.allStudents
+        .flatMap((student) => student.studentAssignment)
+        .find((assignment) => assignment.id === currentAssignmentId);
+      setCurrentAssignment(newAssignment);
       setShowedContent("interfaceButton");
-      return processedData;
+      return modifiedTeacherState;
+    });
+  }
+  function handleDeleteAssignment(assignmentId) {
+    setCurrentTeacher((prev) => {
+      const newTeacherState = { ...prev };
+      newTeacherState.allStudents.forEach((studentObj) => {
+        const removedAssignment = studentObj.studentAssignment.filter(
+          (assignmentObj) => {
+            return assignmentObj.id !== assignmentId;
+          }
+        );
+        studentObj.studentAssignment = removedAssignment;
+      });
+      newTeacherState.allStudents.forEach((studentObj) => {
+        const sum = studentObj.studentAssignment.reduce((acc, curr) => {
+          return acc + curr.score;
+        }, 0);
+        studentObj.average = Math.round(
+          sum / studentObj.studentAssignment.length
+        );
+      });
+      if (assignmentId === currentAssignment?.id) {
+        setCurrentAssignment(null);
+      }
+      return newTeacherState;
     });
   }
   return (
@@ -442,7 +491,6 @@ function AssignmentMenu({
             <button
               onClick={() => {
                 handleAddAssignment();
-                console.log(currentTeacher);
               }}
             >
               Update
@@ -454,7 +502,9 @@ function AssignmentMenu({
           {currentStudent.studentAssignment.map((assignmentObj) => (
             <div class="assignmentDelete">
               <p key={assignmentObj.id}>{assignmentObj.assignmentName}</p>
-              <button>X</button>
+              <button onClick={() => handleDeleteAssignment(assignmentObj.id)}>
+                X
+              </button>
             </div>
           ))}
         </div>
@@ -506,7 +556,7 @@ function StudentViewMenu({
             key={assignmentObj.assignmentName}
             onClick={() => handleCurrentAssignment(assignmentObj.id)}
             style={
-              assignmentObj.id === currentAssignment.id
+              assignmentObj.id === currentAssignment?.id
                 ? { backgroundColor: "#a33600" }
                 : {}
             }
@@ -548,13 +598,13 @@ function AssignmentInfo({
           <p>Select assignment</p>
         )}
         {currentStudent && currentStudent && (
-          <p>{currentAssignment.assignmentName}</p>
+          <p>{currentAssignment?.assignmentName}</p>
         )}
       </div>
       <div class="listOfStudents">
         {currentTeacher?.allStudents.map((studentObj) => {
           const selectedAssignment = studentObj.studentAssignment.find(
-            (assignmentObj) => assignmentObj.id === currentAssignment.id
+            (assignmentObj) => assignmentObj.id === currentAssignment?.id
           );
           return (
             selectedAssignment && (
@@ -576,7 +626,7 @@ function AssignmentInfo({
                   <p>{studentObj.lastName}</p>
                 </div>
                 <input
-                  key={`${studentObj.studentId}-${currentAssignment.id}`}
+                  key={`${studentObj.studentId}-${currentAssignment?.id}`}
                   type="text"
                   placeholder={selectedAssignment.score}
                   onChange={(e) =>
