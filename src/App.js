@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
 
 function App() {
-  const [data, setData] = useState([
+  const initialData = [
     {
       teacherName: "Jade Pineda",
       userName: "jp",
@@ -190,7 +190,19 @@ function App() {
         },
       ],
     },
-  ]);
+  ];
+  const processedData = initialData.map((teacher) => {
+    teacher.allStudents = teacher.allStudents.map((student) => {
+      const totalScore = student.studentAssignment.reduce(
+        (sum, assignment) => sum + assignment.score,
+        0
+      );
+      const average = Math.round(totalScore / student.studentAssignment.length);
+      return { ...student, average };
+    });
+    return teacher;
+  });
+  const [data, setData] = useState(processedData);
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentTeacher, setCurrentTeacher] = useState(null);
   const [currentStudent, setCurrentStudent] = useState(null);
@@ -304,6 +316,7 @@ function App() {
           showedContent === "assignmentsButton" && (
             <AssignmentMenu
               currentTeacher={currentTeacher}
+              setCurrentTeacher={setCurrentTeacher}
               setData={setData}
               setShowedContent={setShowedContent}
               handleCurrentAssignment={handleCurrentAssignment}
@@ -329,6 +342,7 @@ function App() {
 }
 export default App;
 function AssignmentMenu({
+  setCurrentTeacher,
   currentTeacher,
   setData,
   setShowedContent,
@@ -363,25 +377,21 @@ function AssignmentMenu({
           ...studentObj.studentAssignment,
         ];
       });
-      handleCurrentAssignment(id);
-      setShowedContent("interfaceButton");
-      return updatedPrev;
-    });
-  }
-  function handleDeleteAssignment(assignmentId) {
-    setData((prev) => {
-      const updatedData = [...prev];
-      const teacherToUpdate = updatedData.find(
-        (teacherObj) =>
-          teacherObj.userPin === currentTeacher.userPin &&
-          teacherObj.userName === currentTeacher.userName
-      );
-      teacherToUpdate.allStudents.forEach((studentObj) => {
-        studentObj.studentAssignment = studentObj.studentAssignment.filter(
-          (assignmentObj) => assignmentObj.id !== assignmentId
-        );
+      const processedData = updatedPrev.map((teacher) => {
+        teacher.allStudents = teacher.allStudents.map((student) => {
+          const totalScore = student.studentAssignment.reduce(
+            (sum, assignment) => sum + assignment.score,
+            0
+          );
+          const average = Math.round(
+            totalScore / student.studentAssignment.length
+          );
+          return { ...student, average };
+        });
+        return teacher;
       });
-      return updatedData;
+      setShowedContent("interfaceButton");
+      return processedData;
     });
   }
   return (
@@ -443,10 +453,8 @@ function AssignmentMenu({
         <div class="deleteAssignmentMenu">
           {currentStudent.studentAssignment.map((assignmentObj) => (
             <div class="assignmentDelete">
-              <p>{assignmentObj.assignmentName}</p>
-              <button onClick={() => handleDeleteAssignment(assignmentObj.id)}>
-                X
-              </button>
+              <p key={assignmentObj.id}>{assignmentObj.assignmentName}</p>
+              <button>X</button>
             </div>
           ))}
         </div>
