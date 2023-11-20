@@ -263,6 +263,7 @@ function App() {
 
     return style;
   }
+  //fix the function that is returning
   function determineGradeLetter(assignmentScore) {
     const gradeLetter =
       assignmentScore >= 95
